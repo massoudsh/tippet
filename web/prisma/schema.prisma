@@ -1,0 +1,149 @@
+// تیپت — دیتامدل اولیه (MVP)
+// جزئیات مفهومی هر موجودیت در /docs/DATA_MODEL.md توضیح داده شده است.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+// ---------- کاربران و سلیقه ----------
+
+enum UserRole {
+  BUYER
+  SELLER
+  BOTH
+}
+
+model User {
+  id        String   @id @default(uuid())
+  phone     String   @unique
+  name      String?
+  role      UserRole @default(BUYER)
+  city      String?
+  createdAt DateTime @default(now())
+
+  styleProfile  StyleProfile?
+  items         Item[]        @relation("SellerItems")
+  interactions  Interaction[]
+}
+
+model StyleProfile {
+  id                   String   @id @default(uuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id])
+  sizeInfo             Json?
+  budgetMin            Int?
+  budgetMax            Int?
+  preferredCategories  String[]
+  preferredColors      String[]
+  // بردار سلیقه برای جست‌وجوی شباهت با pgvector
+  // tasteEmbedding     Unsupported("vector(1536)")?
+  updatedAt            DateTime @updatedAt
+}
+
+// ---------- دسته‌بندی و برچسب سبک ----------
+
+model Category {
+  id       String     @id @default(uuid())
+  name     String
+  parentId String?
+  parent   Category?  @relation("CategoryParent", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryParent")
+  items    Item[]
+}
+
+model StyleTag {
+  id    String          @id @default(uuid())
+  name  String          @unique
+  items ItemStyleTag[]
+}
+
+model ItemStyleTag {
+  itemId     String
+  styleTagId String
+  confidence Float?
+
+  item     Item     @relation(fields: [itemId], references: [id])
+  styleTag StyleTag @relation(fields: [styleTagId], references: [id])
+
+  @@id([itemId, styleTagId])
+}
+
+// ---------- آیتم لباس ----------
+
+enum ItemCondition {
+  NEW_WITH_TAG
+  LIKE_NEW
+  GOOD
+  FAIR
+}
+
+enum ItemStatus {
+  ACTIVE
+  RESERVED
+  SOLD
+  REMOVED
+}
+
+model Item {
+  id          String        @id @default(uuid())
+  sellerId    String
+  seller      User          @relation("SellerItems", fields: [sellerId], references: [id])
+  title       String
+  description String
+  categoryId  String
+  category    Category      @relation(fields: [categoryId], references: [id])
+  brand       String?
+  size        String?
+  condition   ItemCondition
+  color       String?
+  material    String?
+  price       Int
+  city        String
+  status      ItemStatus    @default(ACTIVE)
+  // بردار ویژگی آیتم برای تطابق سلیقه با pgvector
+  // itemEmbedding Unsupported("vector(1536)")?
+  aiExtractedTags Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  images       ItemImage[]
+  styleTags    ItemStyleTag[]
+  interactions Interaction[]
+}
+
+model ItemImage {
+  id     String @id @default(uuid())
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id])
+  url    String
+  order  Int    @default(0)
+}
+
+// ---------- تعامل کاربر با آیتم ----------
+
+enum InteractionType {
+  VIEW
+  LIKE
+  DISLIKE
+  SAVE
+  CONTACT_SELLER
+}
+
+model Interaction {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  itemId    String
+  item      Item             @relation(fields: [itemId], references: [id])
+  type      InteractionType
+  createdAt DateTime         @default(now())
+
+  @@index([userId, createdAt])
+  @@index([itemId])
+}
