@@ -27,7 +27,19 @@ npm run dev
 src/
   app/            صفحات و layout (Next.js App Router)
   components/     کامپوننت‌های UI
-  lib/            سرویس‌ها و منطق دامنه (prisma client، recommendation و...)
+  lib/            سرویس‌ها و منطق دامنه (prisma client، matching، recommendation و...)
 prisma/
   schema.prisma   دیتامدل (شرح مفهومی در /docs/DATA_MODEL.md)
 ```
+
+## lint، type-check و تست
+
+```bash
+npm run lint        # ESLint (next lint)
+npm run type-check  # tsc --noEmit
+npm run test        # Vitest — تست‌های منطق دامنه در src/lib
+```
+
+تست‌ها روی توابع خالص دامنه (`src/lib/matching.ts`) اجرا می‌شوند و به دیتابیس نیاز ندارند.
+CI (`.github/workflows/ci.yml`) همین مراحل به‌علاوه‌ی `npm run build` را روی هر push/PR به
+`main` اجرا می‌کند.

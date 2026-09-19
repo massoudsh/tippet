@@ -3,6 +3,9 @@
 
 generator client {
   provider = "prisma-client-js"
+  // بدون این فلگ، کلید `extensions` در بلوک datasource نامعتبر است و `prisma generate` با خطای
+  // اعتبارسنجی شکست می‌خورد (Issue #۱۵ در CI). pgvector لازمه‌ی Issue #۱۸ است.
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {

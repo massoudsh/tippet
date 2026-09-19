@@ -1,0 +1,62 @@
+name: CI
+
+# هر push به main و هر PR → lint + type-check + test + build (Issue #15 و #17)
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: lint + type-check + test + build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    env:
+      # فقط برای `prisma generate` (تولید کلاینت) لازم است؛ هیچ مرحله‌ای به دیتابیس واقعی وصل نمی‌شود.
+      DATABASE_URL: postgresql://tippet:tippet@localhost:5432/tippet
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Node 20 — هم‌راستا با @types/node و فیلد engines در web/package.json
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # توجه: `npm ci` به package-lock.json نیاز دارد که هنوز commit نشده است
+      # (ساخت قفل پکیج طبق AGENTS.md روی سرور SSH انجام می‌شود). به‌محض commit شدن
+      # lockfile، همین گام خودکار به `npm ci` (نصب قطعی و قابل‌تکرار) تغییر می‌کند.
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install --no-audit --no-fund
+          fi
+
+      # type-check و build به کلاینت تولیدشده‌ی Prisma نیاز دارند
+      - name: Generate Prisma client
+        run: npm run prisma:generate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build
