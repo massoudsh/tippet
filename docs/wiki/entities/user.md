@@ -17,4 +17,4 @@
 - جزئیات OTP هنوز مشخص نشده (ریسک باز PRD بخش ۱۰؛ پیگیری Issue #۱۹).
 
 ## منابع کد
-- `web/prisma/schema.prisma:22` — مدل `User`
+- `web/prisma/schema.prisma:25` — مدل `User`

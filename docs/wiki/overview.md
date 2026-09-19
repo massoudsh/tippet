@@ -29,5 +29,9 @@ Next.js 14 (App Router, TypeScript) + Prisma + PostgreSQL (pgvector) + Tailwind 
 صفحه اصلی خالی، `RecommendationService` هنوز stub (`return []`). پیاده‌سازی واقعی فیچرهای فاز ۱ هنوز
 شروع نشده — پیگیری در Issueهای گیت‌هاب، Milestone «فاز ۱ – MVP».
 
+زیرساخت مهندسی آماده شده است: CI گیت‌هاب (`.github/workflows/ci.yml`: lint + type-check + test + build
+روی Node 20 — Issue #۱۵)، تست واحد با Vitest برای منطق خالص دامنه در `web/src/lib/matching.ts`
+(Issue #۱۷) و مجوز Apache-2.0 (Issue #۱۶). جزئیات در [[concepts/tech-stack]] و [[concepts/ai-discovery]].
+
 ## اسناد مرجع
 سند کامل PRD: [`/docs/PRD.md`](../PRD.md) — دیتامدل کامل: [`/docs/DATA_MODEL.md`](../DATA_MODEL.md)

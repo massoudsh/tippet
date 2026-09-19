@@ -21,4 +21,4 @@
 - کیفیت عکس فروشنده مستقیم روی دقت `aiExtractedTags` اثر دارد (ریسک PRD بخش ۱۰؛ Issue #۲۱).
 
 ## منابع کد
-- `web/prisma/schema.prisma:93` — مدل `Item`
+- `web/prisma/schema.prisma:96` — مدل `Item`

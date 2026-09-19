@@ -15,5 +15,5 @@
 - ایندکس روی `(userId, createdAt)` و `itemId` برای کوئری‌های فید/آمار.
 
 ## منابع کد
-- `web/prisma/schema.prisma:138` — مدل `Interaction`
+- `web/prisma/schema.prisma:141` — مدل `Interaction`
 - `web/src/lib/recommendation.ts` — `getRecommendedItems` (فعلاً stub، `return []`)
