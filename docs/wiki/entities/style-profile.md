@@ -28,6 +28,11 @@
 - سایز فقط وقتی امتیاز می‌گیرد که `sizeInfo` برای همان دسته‌ی آیتم مقدار داشته باشد.
 - ابعاد ناهم‌خوان بردار سلیقه و بردار آیتم → خطا (نشانه‌ی داده‌ی خراب)، نه امتیاز صفر.
 
+- رتبه‌بندی فید (`rankItems` در همان `matching.ts`): نزولی بر اساس `matchScore` با tie-break قطعی
+  روی `itemId`، به‌علاوه‌ی `minScore` و `limit`؛ خروجی `{ itemId, score, matchPercent }`. این تابع
+  نقطه‌ی ورود محاسباتی `RecommendationService` در فاز بعد است.
+
 ## منابع کد
 - `web/prisma/schema.prisma:38` — مدل `StyleProfile`
-- `web/src/lib/matching.ts` — `buildTasteEmbedding`, `matchScore`, `matchPercent` (تست: `matching.test.ts`)
+- `web/src/lib/matching.ts` — `buildTasteEmbedding`, `cosineSimilarity`, `matchScore`, `matchPercent`,
+  `rankItems` (تست: `matching.test.ts`)

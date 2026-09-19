@@ -35,10 +35,15 @@ jobs:
           node-version: "20"
 
       # توجه: `npm ci` به package-lock.json نیاز دارد که هنوز commit نشده است
-      # (ساخت قفل پکیج طبق AGENTS.md روی سرور SSH انجام می‌شود). بعد از commit شدن
-      # lockfile این خط را به `npm ci` تغییر دهید.
+      # (ساخت قفل پکیج طبق AGENTS.md روی سرور SSH انجام می‌شود). به‌محض commit شدن
+      # lockfile، همین گام خودکار به `npm ci` (نصب قطعی و قابل‌تکرار) تغییر می‌کند.
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install --no-audit --no-fund
+          fi
 
       # type-check و build به کلاینت تولیدشده‌ی Prisma نیاز دارند
       - name: Generate Prisma client

@@ -16,12 +16,16 @@
 > نصب پکیج و build سنگین این پروژه (`npm install`, `npm run build`) باید روی سرور SSH انجام شود،
 > نه داخل محیط ساخت (کانتینر). این محدودیت مربوط به محیط توسعه‌ی محلی است؛ CI خودش build را اجرا می‌کند.
 
-> `npm ci` در CI فعلاً `npm install` است چون `package-lock.json` هنوز commit نشده (ساخت قفل طبق
-> AGENTS.md روی سرور SSH انجام می‌شود).
+> گام نصب در CI: اگر `package-lock.json` موجود باشد `npm ci` و در غیر این صورت
+> `npm install --no-audit --no-fund` اجرا می‌شود (الان حالت دوم، چون قفل طبق AGENTS.md روی سرور SSH
+> ساخته می‌شود و هنوز commit نشده است). هر دو حالت روی خطا fail می‌شوند و `|| true` وجود ندارد.
 
 > وضعیت تأیید: این workflow هنوز هیچ اجرایی روی گیت‌هاب نداشته (تا زمانی که به `main` merge/push شود)،
-> و مراحلش به‌صورت محلی هم اجرا نشده‌اند (طبق AGENTS.md نصب/build محلی ممنوع است). پس «سبز بودن»
-> اولین run تأییدنشده است.
+> و کل مراحلش به‌صورت محلی هم اجرا نشده‌اند (طبق AGENTS.md نصب/build محلی ممنوع است). پس «سبز بودن»
+> اولین run تأییدنشده است. تنها چیزی که به‌صورت محلی و بدون `npm install` تأیید شده: تراز بودن
+> import/export تست‌ها با `matching.ts`/`recommendation.ts`، پاس شدن هر ۳۷ assertion تست دامنه
+> (اجرا با یک شبیه‌ساز حداقلی API ویتست، نه خود vitest) و type-check تمیز `matching.ts` با
+> `--strict`. `next lint`/`tsc` روی کل اپ و `next build` اجرا نشده‌اند.
 
 ## منابع کد
 - `web/package.json`, `web/prisma/schema.prisma`, `web/tailwind.config.ts`
