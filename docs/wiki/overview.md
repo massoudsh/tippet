@@ -30,7 +30,8 @@ Next.js 14 (App Router, TypeScript) + Prisma + PostgreSQL (pgvector) + Tailwind 
 شروع نشده — پیگیری در Issueهای گیت‌هاب، Milestone «فاز ۱ – MVP».
 
 زیرساخت مهندسی آماده شده است: CI گیت‌هاب (`.github/workflows/ci.yml`: lint + type-check + test + build
-روی Node 20 — Issue #۱۵)، تست واحد با Vitest برای منطق خالص دامنه در `web/src/lib/matching.ts`
+روی Node 20 — Issue #۱۵، اولین اجرا روی PR #۲۴ سبز)، تست واحد با Vitest برای منطق خالص دامنه در
+`web/src/lib/matching.ts`
 (Issue #۱۷) و مجوز Apache-2.0 (Issue #۱۶). جزئیات در [[concepts/tech-stack]] و [[concepts/ai-discovery]].
 
 ## اسناد مرجع

@@ -20,12 +20,14 @@
 > `npm install --no-audit --no-fund` اجرا می‌شود (الان حالت دوم، چون قفل طبق AGENTS.md روی سرور SSH
 > ساخته می‌شود و هنوز commit نشده است). هر دو حالت روی خطا fail می‌شوند و `|| true` وجود ندارد.
 
-> وضعیت تأیید: این workflow هنوز هیچ اجرایی روی گیت‌هاب نداشته (تا زمانی که به `main` merge/push شود)،
-> و کل مراحلش به‌صورت محلی هم اجرا نشده‌اند (طبق AGENTS.md نصب/build محلی ممنوع است). پس «سبز بودن»
-> اولین run تأییدنشده است. تنها چیزی که به‌صورت محلی و بدون `npm install` تأیید شده: تراز بودن
-> import/export تست‌ها با `matching.ts`/`recommendation.ts`، پاس شدن هر ۳۷ assertion تست دامنه
-> (اجرا با یک شبیه‌ساز حداقلی API ویتست، نه خود vitest) و type-check تمیز `matching.ts` با
-> `--strict`. `next lint`/`tsc` روی کل اپ و `next build` اجرا نشده‌اند.
+> وضعیت تأیید: اولین اجرای واقعی این workflow روی PR #۲۴ (شاخه‌ی `fix/open-issues-batch`) **سبز** شد —
+> هر ۹ گام (install, prisma generate, lint, type-check, test, build) پاس شدند (~۵۵ ثانیه، ubuntu-latest,
+> Node 20). یعنی `prisma generate` با `previewFeatures = ["postgresqlExtensions"]` کار می‌کند و
+> `next build`/`next lint` روی اسکلت فعلی بدون خطا اجرا می‌شوند. اجرای روی `main` بعد از merge تکرار می‌شود.
+> به‌صورت محلی و بدون `npm install` هم تأیید شده: تراز بودن import/export تست‌ها با
+> `matching.ts`/`recommendation.ts`، پاس شدن هر ۳۷ assertion تست دامنه (اجرا با یک شبیه‌ساز حداقلی API
+> ویتست، نه خود vitest) و type-check تمیز `matching.ts` با `--strict`. خود `npm install`/`vitest`/
+> `next build` محلی اجرا نشده و نباید اجرا شود (AGENTS.md).
 
 ## منابع کد
 - `web/package.json`, `web/prisma/schema.prisma`, `web/tailwind.config.ts`
