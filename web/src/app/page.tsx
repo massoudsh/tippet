@@ -47,7 +47,8 @@ export default function HomePage() {
             <a className="transition hover:text-white" href="/outfits">ست‌سازی</a>
             <a className="transition hover:text-white" href="/seller">پنل فروشنده</a>
             <a className="transition hover:text-white" href="/ingestion">ورود آگهی</a>
-            <a className="transition hover:text-white" href="/metrics">معیارها</a>
+            <a className="transition hover:text-white" href="/checkout">پرداخت امن</a>
+            <a className="transition hover:text-white" href="/revenue">درآمد</a>
           </nav>
           <a className="rounded-full bg-amber-300 px-5 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-200" href="/auth">
             ورود با موبایل
@@ -155,6 +156,13 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+        </section>
+
+        <section className="grid gap-4 md:grid-cols-4">
+          <a className="rounded-3xl border border-white/10 bg-white/[0.07] p-5 font-bold text-stone-100 transition hover:bg-white/[0.12]" href="/metrics">داشبورد معیارهای MVP</a>
+          <a className="rounded-3xl border border-white/10 bg-white/[0.07] p-5 font-bold text-stone-100 transition hover:bg-white/[0.12]" href="/expansion">اولویت شهرها و دسته‌ها</a>
+          <a className="rounded-3xl border border-white/10 bg-white/[0.07] p-5 font-bold text-stone-100 transition hover:bg-white/[0.12]" href="/chat">چت داخلی</a>
+          <a className="rounded-3xl border border-white/10 bg-white/[0.07] p-5 font-bold text-stone-100 transition hover:bg-white/[0.12]" href="/revenue">مدل درآمدی</a>
         </section>
       </div>
     </main>

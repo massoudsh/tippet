@@ -32,6 +32,8 @@ export default function ItemPage() {
             <h2 className="font-black">فروشنده</h2>
             <p className="mt-2 text-stone-300">{item.seller.name} · عضویت از {item.seller.joinedAt} · {item.seller.activeItems.toLocaleString("fa-IR")} آگهی فعال</p>
             <div className="mt-4 flex flex-wrap gap-3">
+              <a className="rounded-2xl bg-amber-300 px-4 py-2 font-bold text-slate-950" href="/checkout">پرداخت امن</a>
+              <a className="rounded-2xl bg-white px-4 py-2 font-bold text-slate-950" href="/chat">چت داخلی</a>
               {item.seller.contactLinks.whatsapp && <a className="rounded-2xl bg-emerald-300 px-4 py-2 font-bold text-slate-950" href={item.seller.contactLinks.whatsapp}>تماس واتساپ</a>}
               {item.seller.contactLinks.telegram && <a className="rounded-2xl bg-sky-300 px-4 py-2 font-bold text-slate-950" href={item.seller.contactLinks.telegram}>پیام تلگرام</a>}
             </div>
