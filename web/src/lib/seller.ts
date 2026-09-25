@@ -30,3 +30,9 @@ export function calculateSellerTrustScore(items: SellerPanelItem[]) {
 
   return Math.round(soldRatio * 35 + averageCompleteness * 0.45 + contactSignal * 20);
 }
+
+export function applyBulkStatus(items: SellerPanelItem[], itemIds: string[], status: SellerItemStatus) {
+  const selected = new Set(itemIds);
+
+  return items.map((item) => (selected.has(item.id) ? { ...item, status } : item));
+}

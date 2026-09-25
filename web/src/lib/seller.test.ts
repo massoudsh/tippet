@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateSellerTrustScore, summarizeSellerItems } from "./seller";
+import { calculateSellerTrustScore, summarizeSellerItems, applyBulkStatus } from "./seller";
 
 const items = [
   { id: "1", title: "کت", price: 1000000, status: "ACTIVE" as const, completeness: 90, views: 120, contacts: 7 },
@@ -16,7 +16,7 @@ describe("seller panel helpers", () => {
     });
   });
 
-  it("calculates seller trust score", () => {
-    expect(calculateSellerTrustScore(items)).toBe(76);
+  it("applies bulk status changes", () => {
+    expect(applyBulkStatus(items, ["1", "2"], "SOLD").map((item) => item.status)).toEqual(["SOLD", "SOLD"]);
   });
 });

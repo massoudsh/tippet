@@ -36,6 +36,11 @@ export default function SellerPage() {
             </div>
             <button className="rounded-2xl bg-amber-300 px-5 py-3 font-black text-slate-950">ثبت آگهی جدید</button>
           </div>
+          <div className="mb-5 grid gap-3 rounded-3xl border border-white/10 bg-white/[0.04] p-4 md:grid-cols-3">
+            <button className="rounded-2xl bg-white/10 px-4 py-3 text-sm font-bold text-stone-100">انتخاب آگهی‌های فعال</button>
+            <button className="rounded-2xl bg-amber-300 px-4 py-3 text-sm font-black text-slate-950">تغییر گروهی به فروخته‌شده</button>
+            <a className="rounded-2xl border border-white/10 px-4 py-3 text-center text-sm font-bold text-stone-100" href="/ingestion">ورود آگهی با مجوز</a>
+          </div>
           <div className="overflow-hidden rounded-3xl border border-white/10">
             {items.map((item) => (
               <article key={item.id} className="grid gap-3 border-b border-white/10 bg-white/[0.04] p-4 last:border-b-0 md:grid-cols-[1fr_auto_auto_auto] md:items-center">

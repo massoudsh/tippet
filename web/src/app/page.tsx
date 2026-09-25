@@ -41,10 +41,13 @@ export default function HomePage() {
             <p className="text-xs text-stone-300">کشف هوشمند لباس دست‌دوم</p>
           </div>
           <nav className="hidden items-center gap-6 text-sm text-stone-300 md:flex">
-            <a className="transition hover:text-white" href="/onboarding">آنبوردینگ</a>
+            <a className="transition hover:text-white" href="/feed">فید</a>
+            <a className="transition hover:text-white" href="/search">جست‌وجو</a>
+            <a className="transition hover:text-white" href="/profile">پروفایل</a>
+            <a className="transition hover:text-white" href="/outfits">ست‌سازی</a>
             <a className="transition hover:text-white" href="/seller">پنل فروشنده</a>
+            <a className="transition hover:text-white" href="/ingestion">ورود آگهی</a>
             <a className="transition hover:text-white" href="/metrics">معیارها</a>
-            <a className="transition hover:text-white" href="#photo-guide">راهنمای عکس</a>
           </nav>
           <a className="rounded-full bg-amber-300 px-5 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-200" href="/auth">
             ورود با موبایل
