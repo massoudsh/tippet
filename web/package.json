@@ -2,6 +2,7 @@
   "name": "tipet-web",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "description": "تیپت — کشف هوشمند لباس دست‌دوم، متناسب با سلیقه‌ی تو",
   "scripts": {
     "dev": "next dev",
