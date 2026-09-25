@@ -41,13 +41,13 @@ export default function HomePage() {
             <p className="text-xs text-stone-300">کشف هوشمند لباس دست‌دوم</p>
           </div>
           <nav className="hidden items-center gap-6 text-sm text-stone-300 md:flex">
-            <a className="transition hover:text-white" href="#feed">فید کشف</a>
-            <a className="transition hover:text-white" href="#seller">فروشنده‌ها</a>
-            <a className="transition hover:text-white" href="#trust">اعتماد</a>
+            <a className="transition hover:text-white" href="/onboarding">آنبوردینگ</a>
+            <a className="transition hover:text-white" href="/seller">پنل فروشنده</a>
+            <a className="transition hover:text-white" href="/metrics">معیارها</a>
             <a className="transition hover:text-white" href="#photo-guide">راهنمای عکس</a>
           </nav>
-          <a className="rounded-full bg-amber-300 px-5 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-200" href="#feed">
-            شروع کشف
+          <a className="rounded-full bg-amber-300 px-5 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-200" href="/auth">
+            ورود با موبایل
           </a>
         </header>
 
@@ -65,10 +65,10 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <a className="rounded-2xl bg-stone-50 px-6 py-4 text-center font-bold text-slate-950 shadow-xl shadow-white/10 transition hover:-translate-y-0.5" href="#feed">
-                دیدن فید نمونه
+              <a className="rounded-2xl bg-stone-50 px-6 py-4 text-center font-bold text-slate-950 shadow-xl shadow-white/10 transition hover:-translate-y-0.5" href="/onboarding">
+                ساخت پروفایل سلیقه
               </a>
-              <a className="rounded-2xl border border-white/15 bg-white/10 px-6 py-4 text-center font-bold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15" href="#seller">
+              <a className="rounded-2xl border border-white/15 bg-white/10 px-6 py-4 text-center font-bold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15" href="/seller">
                 ثبت سریع آگهی
               </a>
             </div>
