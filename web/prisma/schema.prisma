@@ -2,7 +2,8 @@
 // جزئیات مفهومی هر موجودیت در /docs/DATA_MODEL.md توضیح داده شده است.
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {

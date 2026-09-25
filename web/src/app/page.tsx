@@ -24,6 +24,12 @@ const featuredItems = [
 
 const trustSignals = ["تشخیص سلیقه با AI", "استانداردسازی آگهی", "نمایش وضعیت و فروشنده", "فیلتر تهران و وینتیج"];
 
+const photoTips = [
+  "عکس اصلی را در نور طبیعی و روی پس‌زمینه ساده بگیر.",
+  "نمای جلو، پشت، برچسب سایز و ایرادهای احتمالی را جدا ثبت کن.",
+  "برای نمایش fit، یک عکس پوشیده‌شده یا اندازه‌گیری دقیق اضافه کن.",
+];
+
 export default function HomePage() {
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,#334155_0,#111827_30%,#070a12_68%)] text-stone-50">
@@ -38,6 +44,7 @@ export default function HomePage() {
             <a className="transition hover:text-white" href="#feed">فید کشف</a>
             <a className="transition hover:text-white" href="#seller">فروشنده‌ها</a>
             <a className="transition hover:text-white" href="#trust">اعتماد</a>
+            <a className="transition hover:text-white" href="#photo-guide">راهنمای عکس</a>
           </nav>
           <a className="rounded-full bg-amber-300 px-5 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-200" href="#feed">
             شروع کشف
@@ -129,6 +136,21 @@ export default function HomePage() {
             <ProcessStep number="۱" title="آپلود عکس" text="نور و زاویه بررسی می‌شود." />
             <ProcessStep number="۲" title="تحلیل AI" text="ویژگی‌های آیتم استخراج می‌شود." />
             <ProcessStep number="۳" title="انتشار" text="آگهی با امتیاز کامل‌بودن ثبت می‌شود." />
+          </div>
+        </section>
+
+        <section id="photo-guide" className="grid gap-6 rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-black/10 backdrop-blur lg:grid-cols-[0.8fr_1.2fr] lg:p-8">
+          <div>
+            <p className="text-sm font-black text-amber-200">راهنمای عکاسی فروشنده</p>
+            <h2 className="mt-3 text-3xl font-black leading-tight">عکس بهتر، اعتماد بیشتر و فروش سریع‌تر.</h2>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            {photoTips.map((tip, index) => (
+              <div key={tip} className="rounded-3xl border border-white/10 bg-slate-950/70 p-5">
+                <span className="mb-6 flex size-9 items-center justify-center rounded-2xl bg-amber-300 text-sm font-black text-slate-950">{index + 1}</span>
+                <p className="text-sm leading-7 text-stone-200">{tip}</p>
+              </div>
+            ))}
           </div>
         </section>
       </div>
