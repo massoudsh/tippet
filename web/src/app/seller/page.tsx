@@ -34,7 +34,7 @@ export default function SellerPage() {
               <p className="text-sm font-black text-amber-200">پنل ساده فروشنده</p>
               <h1 className="mt-2 text-3xl font-black">مدیریت آگهی‌ها و وضعیت فروش</h1>
             </div>
-            <button className="rounded-2xl bg-amber-300 px-5 py-3 font-black text-slate-950">ثبت آگهی جدید</button>
+            <a className="rounded-2xl bg-amber-300 px-5 py-3 text-center font-black text-slate-950" href="/seller/new">ثبت آگهی جدید</a>
           </div>
           <div className="mb-5 grid gap-3 rounded-3xl border border-white/10 bg-white/[0.04] p-4 md:grid-cols-3">
             <button className="rounded-2xl bg-white/10 px-4 py-3 text-sm font-bold text-stone-100">انتخاب آگهی‌های فعال</button>
