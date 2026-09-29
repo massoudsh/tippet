@@ -12,11 +12,12 @@
 docker compose up -d postgres
 npm --prefix web install
 npm --prefix web run prisma:generate
+npm --prefix web run prisma:migrate -- --name local_setup
 npm --prefix web run typecheck
 npm --prefix web test
 ```
 
-دیتابیس توسعه با PostgreSQL و افزونه pgvector اجرا می‌شود و مقدار `DATABASE_URL` نمونه در `web/.env.example` آمده است.
+دیتابیس توسعه با PostgreSQL و افزونه pgvector اجرا می‌شود و مقدار `DATABASE_URL` نمونه در `web/.env.example` آمده است. تست persistence در صورت تنظیم `DATABASE_URL` اجرا می‌شود و در محیط بدون دیتابیس skip خواهد شد.
 
 ## وضعیت MVP
 

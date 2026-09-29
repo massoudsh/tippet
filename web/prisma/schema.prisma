@@ -31,6 +31,8 @@ model User {
   styleProfile  StyleProfile?
   items         Item[]        @relation("SellerItems")
   interactions  Interaction[]
+  otpChallenges OtpChallenge[]
+  sessions      Session[]
 }
 
 model StyleProfile {
@@ -47,11 +49,37 @@ model StyleProfile {
   updatedAt            DateTime @updatedAt
 }
 
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model OtpChallenge {
+  id        String   @id @default(uuid())
+  phone     String
+  codeHash  String
+  expiresAt DateTime
+  consumedAt DateTime?
+  createdAt DateTime @default(now())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([phone, createdAt])
+  @@index([expiresAt])
+}
+
 // ---------- دسته‌بندی و برچسب سبک ----------
 
 model Category {
   id       String     @id @default(uuid())
-  name     String
+  name     String     @unique
   parentId String?
   parent   Category?  @relation("CategoryParent", fields: [parentId], references: [id])
   children Category[] @relation("CategoryParent")
@@ -116,6 +144,10 @@ model Item {
   images       ItemImage[]
   styleTags    ItemStyleTag[]
   interactions Interaction[]
+  @@index([sellerId, status])
+  @@index([city, status])
+  @@index([categoryId, status])
+  @@index([price])
 }
 
 model ItemImage {
