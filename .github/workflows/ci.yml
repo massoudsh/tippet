@@ -8,9 +8,25 @@ on:
 jobs:
   web:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: tipet
+          POSTGRES_USER: tipet
+          POSTGRES_PASSWORD: tipet
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tipet -d tipet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     defaults:
       run:
         working-directory: web
+    env:
+      DATABASE_URL: postgresql://tipet:tipet@localhost:5432/tipet?schema=public
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,6 +40,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run prisma:generate
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
 
       - name: Lint
         run: npm run lint
