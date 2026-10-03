@@ -12,4 +12,4 @@
 - عمق سلسله‌مراتب در schema محدود نشده — باید در سطح seed/UI کنترل شود.
 
 ## منابع کد
-- `web/prisma/schema.prisma:51` — مدل `Category`
+- `web/prisma/schema.prisma:54` — مدل `Category`

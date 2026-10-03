@@ -15,5 +15,5 @@
 - کلید ترکیبی `(itemId, styleTagId)` — هر آیتم هر تگ را فقط یک‌بار می‌گیرد.
 
 ## منابع کد
-- `web/prisma/schema.prisma:60` — مدل `StyleTag`
-- `web/prisma/schema.prisma:66` — مدل `ItemStyleTag`
+- `web/prisma/schema.prisma:63` — مدل `StyleTag`
+- `web/prisma/schema.prisma:69` — مدل `ItemStyleTag`

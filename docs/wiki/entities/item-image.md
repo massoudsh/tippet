@@ -13,4 +13,4 @@
   آپلود/CDN خارج از این جدول است.
 
 ## منابع کد
-- `web/prisma/schema.prisma:120` — مدل `ItemImage`
+- `web/prisma/schema.prisma:123` — مدل `ItemImage`
