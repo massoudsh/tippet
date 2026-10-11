@@ -1,5 +1,7 @@
 # Log
 
+## [2026-10-11] update | تکمیل تماس فروشنده برای آگهی‌های واقعی: فیلدهای اختیاری `contactPhone`، `whatsappUrl` و `telegramUrl` در `User` با migration و API احرازشده ذخیره می‌شوند؛ `/items/[id]` پیوندهای موجود را نمایش می‌دهد و نبود واتساپ/تلگرام را صریحاً غیرفعال نشان می‌دهد. ثبت قرارداد در [[entities/item]] و [[entities/seller]].
+
 ## [2026-10-11] update | ارتقای پیش‌نمایش‌های فاز ۳ در `/checkout` و `/chat`: مراحل روشن، CTAهای بازگشت، حالت‌های غیرفعال و متن صریحِ بدون پرداخت یا ارسال واقعی؛ افزودن [[concepts/frontend-ui]] برای قرارداد مشترک ComingSoonBanner و دسترس‌پذیری.
 
 ## [2026-10-11] update | تبدیل `/ingestion` به جریان ورود دستیِ URL-یار: بررسی نشست و redirect ورود، اعتبارسنجی Zod، آپلود تصویر و ثبت با API آیتم، همراه با حالت‌های loading/error/success؛ URL منبع فعلاً scrape یا ذخیره نمی‌شود. ثبت قرارداد در [[entities/item]] و [[concepts/frontend-ui]]
