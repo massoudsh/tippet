@@ -1,25 +1,38 @@
-# Frontend UI
+# فرانت‌اند و UI
 
-## پنل فروشنده
-- مسیر `/seller` آگهی‌های فروشنده را از `GET /api/seller/items` می‌خواند.
-- `/ingestion` پس از بررسی `GET /api/auth/me`، کاربر ناشناس را به `/auth?next=/ingestion` هدایت می‌کند و برای کاربر واردشده فرم دستیِ URL-یار نمایش می‌دهد.
-- فرم ورودی با `ingestionDraftSchema` (Zod) لینک HTTP(S)، فیلدهای آیتم، قیمت، وضعیت، تصویر و تأیید مجوز را پیش از آپلود بررسی می‌کند؛ سپس تصویرها را با `POST /api/items/upload` و آگهی را با `POST /api/items` ثبت می‌کند.
-- این جریان scrape یا ذخیرهٔ URL منبع ندارد؛ پس از ثبت فقط لینک آیتم و پنل فروشنده را ارائه می‌کند.
-- فروشنده می‌تواند آگهی‌های فعال را انتخاب کند و با `PATCH /api/seller/items/status` به `SOLD` تغییر دهد.
-- دکمه و انتخاب‌گرها هنگام ارسال غیرفعال‌اند؛ پس از پاسخ، پیام وضعیت شامل تغییرهای موفق، بدون‌تغییر و ناموفق نمایش داده و فهرست دوباره بارگذاری می‌شود.
+## جهت طراحی
+- فارسی، RTL، تم **Turquoise (فیروزه)** از VibeFarsi — glassmorphism (`lang="fa" dir="rtl"`).
+- توکن‌ها در `web/src/app/globals.css` (سطح نیمه‌شفاف، `backdrop-filter`، گرادیان پس‌زمینه، Noto Kufi برای display)؛ نگاشت Tailwind در `web/tailwind.config.ts`.
+- utilityهای شیشه: `surface-glass` / `surface-glass-strong` روی کارت، هدر، ناوبری پایین.
+- اعداد و تومان از `web/src/lib/utils.ts` (`fa`, `faNumber`, `formatToman`, `faPercent`).
+- کامپوننت‌های مشترک در `web/src/components/` (بدون وابستگی lucide؛ آیکون‌های ضروری با متن/علامت).
 
-## پیش‌نمایش‌های فاز ۳
-- `/checkout` یک جریان سه‌مرحله‌ایِ نمایشی برای «کت جین وینتیج» دارد. پرداخت، ثبت سفارش و نگه‌داری وجه غیرفعال‌اند و متن صفحه صریحاً آن را اعلام می‌کند؛ CTAها فقط به آیتم یا گفتگو با فروشنده بازمی‌گردند.
-- `/chat` یک thread نمونهٔ خریدار و فروشنده نمایش می‌دهد. ورودی و ارسال غیرفعال‌اند، پیام‌ها ذخیره یا ارسال نمی‌شوند و برای ادامهٔ هماهنگی به صفحهٔ آیتم هدایت می‌شود.
-- `ComingSoonBanner` در `web/src/components/coming-soon-banner.tsx` پیام مشترک و قابل‌دسترسِ وضعیت فاز ۳ را برای این پیش‌نمایش‌ها فراهم می‌کند.
+## پوسته مشترک
+- `AppShell` + `SiteHeader` + `BottomNav` (موبایل)
+- `PageHeader`, `ItemCard`, `ComingSoonBanner`, `EmptyState`, `Alert`, `Stepper`, `OtpField`
 
-## داشبوردهای عملیاتی
-- `/metrics` یک Server Component فقط‌خواندنی است و تعداد کل آگهی‌ها و کاربران، آگهی‌های فعال و فروخته‌شده، دسته‌ها، نرخ پسندیدن/تماس نسبت به مشاهده، و جدول پراکندگی دسته را با aggregateهای Prisma نشان می‌دهد. همهٔ کارت‌ها با نشان «زنده» از دادهٔ پایگاه داده‌اند.
-- صفحهٔ آیتم برای کاربران نشست‌دار، مشاهده و کلیک روی هر راه تماس فروشنده را به `/api/interactions` می‌فرستد؛ ارسال تعامل مسیر بازشدن راه تماس را مسدود نمی‌کند.
-- `/expansion` عرضهٔ فعال، تعامل ثبت‌شده و تعداد فروشندگان یکتای هر ترکیب شهر/دسته را می‌خواند و با وزن‌های ۵۰٪، ۳۵٪ و ۱۵٪ امتیاز اولویت می‌سازد. اگر عرضهٔ فعال نباشد، به‌جای دادهٔ نمونه وضعیت خالی نشان داده می‌شود.
+## مسیرهای کاربر (App Router)
+| مسیر | نقش | وضعیت UI |
+|---|---|---|
+| `/` | لندینگ | برند + CTA سلیقه/آگهی + پیش‌نمایش فید |
+| `/auth` | OTP موبایل | دو مرحله شماره/کد، اعتبارسنجی ۰۹، loading/error |
+| `/onboarding` | پروفایل سلیقه | فرم چندمرحله‌ای → `PUT /api/style-profile` |
+| `/feed` | کشف | رتبه‌بندی واقعی آیتم‌ها + empty/auth alerts |
+| `/search` | فیلتر | فرم GET + empty state |
+| `/items/[id]` | جزئیات واقعی | تصاویر، مشخصات، `ItemActions` (LIKE/SAVE/CONTACT) |
+| `/items/vintage-denim-jacket` | دمو کاتالوگ | تماس واتساپ/تلگرام؛ escrow/chat غیرفعال |
+| `/profile` | سلیقه ذخیره‌شده | خواندن از DB + logout |
+| `/seller` | پنل فروشنده | متریک نمونه + انتخاب گروهی (API گروهی هنوز نیست) |
+| `/seller/new` | ثبت آگهی | آپلود + `POST /api/items` |
+| `/outfits` | ست ساده | مکمل‌های کاتالوگ + coming-soon فاز ۲ |
+| `/checkout` | escrow | coming-soon فاز ۳ + محاسبه نمونه |
+| `/chat` | چت | coming-soon فاز ۳ + thread نمونه |
+| `/ingestion` | ورود آگهی خارجی | coming-soon فاز ۲ |
+| `/metrics` | داشبورد MVP | داده نمونه |
+| `/revenue` | مدل درآمد | محاسبه نمونه + coming-soon |
+| `/expansion` | اولویت بازار | امتیاز نمونه شهر/دسته |
 
 ## منابع کد
-- `web/src/app/seller/page.tsx`
-- `web/src/app/checkout/page.tsx`
-- `web/src/app/chat/page.tsx`
-- `web/src/components/coming-soon-banner.tsx`
+- `web/src/app/**/page.tsx`
+- `web/src/components/**`
+- `web/src/lib/utils.ts`

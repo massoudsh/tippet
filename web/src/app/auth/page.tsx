@@ -1,69 +1,196 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
+import { AppShell } from "@/components/layout/app-shell";
+import { PageHeader } from "@/components/layout/page-header";
+import { Alert } from "@/components/ui/alert";
+import { Button, LinkButton } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Field, Input } from "@/components/ui/input";
+import { OtpField } from "@/components/ui/otp-field";
+import { Stepper } from "@/components/ui/stepper";
+import { normalizeIranMobile } from "@/lib/utils";
+
+type Step = "phone" | "otp";
 
 export default function AuthPage() {
+  const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [developmentCode, setDevelopmentCode] = useState<string | null>(null);
-  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function requestOtp(event: FormEvent) {
-    event.preventDefault();
+  const phoneError = useMemo(() => {
+    if (!phone) return "";
+    return normalizeIranMobile(phone) ? "" : "شماره باید با ۰۹ شروع شود و ۱۱ رقم باشد.";
+  }, [phone]);
+
+  async function requestOtp(event?: FormEvent) {
+    event?.preventDefault();
+    const normalized = normalizeIranMobile(phone);
+    if (!normalized) {
+      setError("شماره موبایل معتبر نیست.");
+      return;
+    }
     setLoading(true);
-    setMessage("");
-    const response = await fetch("/api/auth/request-otp", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ phone }),
-    });
-    const payload = await response.json();
-    setLoading(false);
-    if (!response.ok) return setMessage(payload.error);
-    setDevelopmentCode(payload.developmentCode ?? null);
-    setMessage("کد تأیید ارسال شد.");
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch("/api/auth/request-otp", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ phone: normalized }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "ارسال کد ناموفق بود.");
+      setPhone(normalized);
+      setDevelopmentCode(payload.developmentCode ?? null);
+      setSuccess("کد تأیید ارسال شد. تا پنج دقیقه اعتبار دارد.");
+      setStep("otp");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "ارسال کد ناموفق بود.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  async function verifyOtp(event: FormEvent) {
-    event.preventDefault();
+  async function verifyOtp(event?: FormEvent, nextCode = code) {
+    event?.preventDefault();
+    const normalized = normalizeIranMobile(phone);
+    if (!normalized) {
+      setError("ابتدا شماره موبایل را وارد کن.");
+      setStep("phone");
+      return;
+    }
+    if (nextCode.length !== 6) {
+      setError("کد تأیید باید شش رقم باشد.");
+      return;
+    }
     setLoading(true);
-    setMessage("");
-    const response = await fetch("/api/auth/verify-otp", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ phone, code }),
-    });
-    const payload = await response.json();
-    setLoading(false);
-    if (!response.ok) return setMessage(payload.error);
-    window.location.assign("/onboarding");
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ phone: normalized, code: nextCode }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "تأیید کد ناموفق بود.");
+      setSuccess("ورود موفق بود. در حال انتقال…");
+      window.location.assign("/onboarding");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تأیید کد ناموفق بود.");
+      setLoading(false);
+    }
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-5 py-8 text-stone-50">
-      <section className="mx-auto grid max-w-5xl gap-8 rounded-[2rem] border border-white/10 bg-white/[0.06] p-6 shadow-2xl shadow-black/20 md:grid-cols-[0.9fr_1.1fr] md:p-10">
-        <div className="space-y-5">
-          <a className="text-sm text-stone-400 transition hover:text-white" href="/">بازگشت به تیپت</a>
-          <p className="text-sm font-black text-amber-200">ورود امن با موبایل</p>
-          <h1 className="text-4xl font-black leading-tight">احراز هویت OTP برای خریدار و فروشنده.</h1>
-          <p className="leading-8 text-stone-300">کد یک‌بارمصرف پنج دقیقه اعتبار دارد و تعداد درخواست‌ها برای هر شماره محدود شده است.</p>
-        </div>
-        <div className="rounded-[1.5rem] bg-stone-50 p-5 text-slate-950">
-          <form onSubmit={requestOtp}>
-            <label className="text-sm font-bold" htmlFor="phone">شماره موبایل</label>
-            <input id="phone" value={phone} onChange={(event) => setPhone(event.target.value)} className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-left" dir="ltr" placeholder="09121234567" required />
-            <button disabled={loading} className="mt-4 w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white disabled:opacity-60">دریافت کد تأیید</button>
-          </form>
-          <form onSubmit={verifyOtp} className="mt-6 border-t border-slate-200 pt-5">
-            <label className="text-sm font-bold" htmlFor="code">کد شش‌رقمی</label>
-            <input id="code" value={code} onChange={(event) => setCode(event.target.value)} className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-left" dir="ltr" inputMode="numeric" pattern="[0-9]{6}" required />
-            <button disabled={loading} className="mt-4 w-full rounded-2xl bg-amber-300 px-5 py-3 font-black text-slate-950 disabled:opacity-60">تأیید و ورود</button>
-          </form>
-          {developmentCode && <p className="mt-4 rounded-2xl bg-amber-100 p-3 text-sm">کد توسعه: <span dir="ltr">{developmentCode}</span></p>}
-          {message && <p className="mt-4 text-sm text-slate-600">{message}</p>}
-        </div>
-      </section>
-    </main>
+    <AppShell active="none" showBottomNav={false} className="max-w-5xl space-y-6">
+      <PageHeader
+        eyebrow="ورود امن با موبایل"
+        title="احراز هویت OTP برای خریدار و فروشنده"
+        description="کد یک‌بارمصرف پیامکی؛ بدون رمز عبور. بعد از ورود می‌توانی پروفایل سلیقه یا آگهی بسازی."
+      />
+
+      <Stepper
+        current={step === "phone" ? 0 : 1}
+        steps={[
+          { label: "شماره موبایل", description: "دریافت کد" },
+          { label: "کد تأیید", description: "ورود به تیپت" },
+        ]}
+      />
+
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <Card>
+          <CardContent className="space-y-4 p-6">
+            <p className="text-sm leading-7 text-muted-foreground">
+              شماره فقط برای ورود و تماس امن استفاده می‌شود. تعداد درخواست کد برای هر شماره محدود است.
+            </p>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>• فرمت قابل قبول: ۰۹۱۲۱۲۳۴۵۶۷</li>
+              <li>• کد شش‌رقمی تا پنج دقیقه معتبر است</li>
+              <li>• پس از ورود به ساخت پروفایل سلیقه هدایت می‌شوی</li>
+            </ul>
+            <LinkButton href="/" variant="ghost" className="px-0">
+              بازگشت به صفحه اصلی
+            </LinkButton>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="space-y-5 p-6">
+            {step === "phone" ? (
+              <form onSubmit={requestOtp} className="space-y-4">
+                <Field label="شماره موبایل" htmlFor="phone" hint="کد کشور ایران به‌صورت +۹۸ در نظر گرفته می‌شود.">
+                  <Input
+                    id="phone"
+                    name="phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    dir="ltr"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder="09121234567"
+                    startAddon="+98"
+                    error={phoneError}
+                    required
+                  />
+                </Field>
+                <Button type="submit" className="w-full" loading={loading} disabled={Boolean(phoneError) || !phone}>
+                  ارسال کد تأیید
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={(e) => verifyOtp(e)} className="space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm text-muted-foreground">
+                    کد برای <span dir="ltr">{phone}</span> ارسال شد.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setStep("phone");
+                      setCode("");
+                      setError("");
+                      setSuccess("");
+                    }}
+                  >
+                    تغییر شماره
+                  </Button>
+                </div>
+                <Field label="کد شش‌رقمی" htmlFor="otp">
+                  <OtpField
+                    value={code}
+                    onChange={setCode}
+                    onComplete={(value) => verifyOtp(undefined, value)}
+                    disabled={loading}
+                    aria-label="کد تأیید شش‌رقمی"
+                  />
+                </Field>
+                <Button type="submit" variant="brand" className="w-full" loading={loading} disabled={code.length !== 6}>
+                  تأیید و ورود
+                </Button>
+                <Button type="button" variant="outline" className="w-full" loading={loading} onClick={() => void requestOtp()}>
+                  ارسال مجدد کد
+                </Button>
+              </form>
+            )}
+
+            {developmentCode && (
+              <Alert variant="warning" title="کد توسعه">
+                در محیط توسعه از این کد استفاده کن: <span dir="ltr">{developmentCode}</span>
+              </Alert>
+            )}
+            {success && <Alert variant="success">{success}</Alert>}
+            {error && <Alert variant="destructive">{error}</Alert>}
+          </CardContent>
+        </Card>
+      </div>
+    </AppShell>
   );
 }

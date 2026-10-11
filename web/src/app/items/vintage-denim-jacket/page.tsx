@@ -1,5 +1,11 @@
+import { AppShell } from "@/components/layout/app-shell";
+import { Badge } from "@/components/ui/badge";
+import { Button, LinkButton } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Alert } from "@/components/ui/alert";
 import { catalogItems } from "@/lib/catalog";
 import { rankItemsForStyleProfile } from "@/lib/recommendation";
+import { faNumber, faPercent, formatToman } from "@/lib/utils";
 
 const item = catalogItems.find((catalogItem) => catalogItem.id === "vintage-denim-jacket")!;
 const match = rankItemsForStyleProfile([item], {
@@ -10,45 +16,80 @@ const match = rankItemsForStyleProfile([item], {
   maxPrice: 2000000,
 })[0].score;
 
-export default function ItemPage() {
+export default function DemoItemPage() {
   return (
-    <main className="min-h-screen bg-[#070a12] px-5 py-8 text-stone-50">
-      <section className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-sky-200 via-slate-200 to-zinc-300 p-5 shadow-2xl shadow-black/20">
-          <div className="h-96 rounded-[1.5rem] border border-white/50 bg-white/30" />
-        </div>
-        <div className="space-y-5 rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 md:p-8">
-          <a className="text-sm text-stone-400 transition hover:text-white" href="/feed">بازگشت به فید</a>
-          <span className="inline-flex rounded-full bg-amber-300 px-3 py-1 text-sm font-black text-slate-950">{match.toLocaleString("fa-IR")}٪ به سلیقه تو نزدیک است</span>
-          <h1 className="text-4xl font-black">{item.title}</h1>
-          <p className="leading-8 text-stone-300">{item.category} {item.brand ? `برند ${item.brand}` : ""} با وضعیت {item.condition}، مناسب استایل وینتیج و استریت‌ویر.</p>
-          <div className="grid gap-3 md:grid-cols-2">
-            <Info title="سایز" value={item.size} />
-            <Info title="رنگ" value={item.color} />
-            <Info title="شهر" value={item.city} />
-            <Info title="قیمت" value={`${item.price.toLocaleString("fa-IR")} تومان`} />
+    <AppShell active="feed" className="space-y-6">
+      <div className="flex items-center justify-between gap-3">
+        <LinkButton href="/feed" variant="ghost" size="sm">
+          بازگشت به فید
+        </LinkButton>
+        <Badge variant="warning">نمونه کاتالوگ</Badge>
+      </div>
+
+      <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="rounded-surface border-line border-border bg-gradient-to-br from-sky-200/80 via-slate-200/70 to-zinc-400/60 p-5">
+          <div className="flex h-96 items-end rounded-overlay border border-white/40 bg-white/25 p-4">
+            <p className="text-sm font-medium text-slate-800">پیش‌نمایش بصری آیتم نمونه</p>
           </div>
-          <div className="rounded-3xl bg-white/10 p-5">
-            <h2 className="font-black">فروشنده</h2>
-            <p className="mt-2 text-stone-300">{item.seller.name} · عضویت از {item.seller.joinedAt} · {item.seller.activeItems.toLocaleString("fa-IR")} آگهی فعال</p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <a className="rounded-2xl bg-amber-300 px-4 py-2 font-bold text-slate-950" href="/checkout">پرداخت امن</a>
-              <a className="rounded-2xl bg-white px-4 py-2 font-bold text-slate-950" href="/chat">چت داخلی</a>
-              {item.seller.contactLinks.whatsapp && <a className="rounded-2xl bg-emerald-300 px-4 py-2 font-bold text-slate-950" href={item.seller.contactLinks.whatsapp}>تماس واتساپ</a>}
-              {item.seller.contactLinks.telegram && <a className="rounded-2xl bg-sky-300 px-4 py-2 font-bold text-slate-950" href={item.seller.contactLinks.telegram}>پیام تلگرام</a>}
+        </div>
+
+        <Card>
+          <CardHeader className="space-y-4">
+            <Badge variant="brand">{faPercent(match)} به سلیقه تو نزدیک است</Badge>
+            <h1 className="text-3xl font-display leading-tight sm:text-4xl">{item.title}</h1>
+            <p className="leading-8 text-muted-foreground">
+              {item.category}
+              {item.brand ? ` برند ${item.brand}` : ""} با وضعیت {item.condition}، مناسب استایل وینتیج و استریت‌ویر.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Info title="سایز" value={item.size} />
+              <Info title="رنگ" value={item.color} />
+              <Info title="شهر" value={item.city} />
+              <Info title="قیمت" value={formatToman(item.price)} />
             </div>
-          </div>
-        </div>
+
+            <div className="rounded-overlay border-line border-border bg-secondary/50 p-4">
+              <h2 className="font-semibold">فروشنده</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {item.seller.name} · عضویت از {item.seller.joinedAt} · {faNumber(item.seller.activeItems)} آگهی فعال
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {item.seller.contactLinks.whatsapp && (
+                  <LinkButton href={item.seller.contactLinks.whatsapp} variant="brand" target="_blank" rel="noreferrer">
+                    تماس واتساپ
+                  </LinkButton>
+                )}
+                {item.seller.contactLinks.telegram && (
+                  <LinkButton href={item.seller.contactLinks.telegram} variant="outline" target="_blank" rel="noreferrer">
+                    پیام تلگرام
+                  </LinkButton>
+                )}
+                <Button variant="ghost" disabled title="پرداخت امن در فاز ۳">
+                  پرداخت امن (به‌زودی)
+                </Button>
+                <Button variant="ghost" disabled title="چت داخلی در فاز ۳">
+                  چت داخلی (به‌زودی)
+                </Button>
+              </div>
+            </div>
+
+            <Alert variant="info" title="این صفحه دمو است">
+              برای آگهی‌های واقعی ثبت‌شده در دیتابیس، مسیر <span dir="ltr">/items/[id]</span> را باز کن.
+            </Alert>
+          </CardContent>
+        </Card>
       </section>
-    </main>
+    </AppShell>
   );
 }
 
 function Info({ title, value }: { title: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-white/10 p-4">
-      <p className="text-xs text-stone-400">{title}</p>
-      <p className="mt-1 font-black">{value}</p>
+    <div className="rounded-control border-line border-border bg-field p-4">
+      <p className="text-xs text-muted-foreground">{title}</p>
+      <p className="mt-1 font-semibold">{value}</p>
     </div>
   );
 }

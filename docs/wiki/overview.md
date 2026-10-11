@@ -25,14 +25,17 @@ Next.js 14 (App Router, TypeScript) + Prisma + PostgreSQL (pgvector) + Tailwind 
 جزئیات و دلایل انتخاب در [[concepts/tech-stack]].
 
 ## وضعیت فعلی کد
-اسکلت اولیه در `web/` آماده است: `schema.prisma` کامل (بدون ستون‌های embedding که فعلاً comment‌اند)،
-صفحه اصلی خالی، `RecommendationService` هنوز stub (`return []`). پیاده‌سازی واقعی فیچرهای فاز ۱ هنوز
-شروع نشده — پیگیری در Issueهای گیت‌هاب، Milestone «فاز ۱ – MVP».
+اسکلت و لایه دامنه در `web/` جلو رفته است: `schema.prisma` کامل (بدون ستون‌های embedding که فعلاً
+comment‌اند)، APIهای OTP/آیتم/پروفایل سلیقه/تعامل، و UI تقریباً production برای همه مسیرهای
+کاربر‌محور با تم شیشه‌ای Turquoise/VibeFarsi و پوسته مشترک (`AppShell` + ناوبری پایین). جزئیات صفحات و دکمه‌ها
+در [[concepts/frontend-ui]].
 
-زیرساخت مهندسی آماده شده است: CI گیت‌هاب (`.github/workflows/ci.yml`: lint + type-check + test + build
-روی Node 20 — Issue #۱۵، اولین اجرا روی PR #۲۴ سبز)، تست واحد با Vitest برای منطق خالص دامنه در
-`web/src/lib/matching.ts`
-(Issue #۱۷) و مجوز Apache-2.0 (Issue #۱۶). جزئیات در [[concepts/tech-stack]] و [[concepts/ai-discovery]].
+`RecommendationService` هنوز برای embedding کامل stub است؛ رتبه‌بندی فید فعلی rule-based روی پروفایل
+سلیقه است. فیچرهای فاز ۲/۳ (escrow، چت داخلی، ingestion خودکار، ست‌سازی کامل) با الگوی coming-soon
+صیقلی در UI نگه داشته شده‌اند.
+
+زیرساخت مهندسی: CI گیت‌هاب (lint + type-check + test + build روی Node 20)، Vitest برای منطق دامنه در
+`web/src/lib/matching.ts` و مجوز Apache-2.0. جزئیات در [[concepts/tech-stack]] و [[concepts/ai-discovery]].
 
 ## اسناد مرجع
 سند کامل PRD: [`/docs/PRD.md`](../PRD.md) — دیتامدل کامل: [`/docs/DATA_MODEL.md`](../DATA_MODEL.md)

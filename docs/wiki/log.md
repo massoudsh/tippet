@@ -1,5 +1,7 @@
 # Log
 
+## [2026-10-11] update | انتقال UI به تم شیشه‌ای Turquoise (VibeFarsi): توکن‌های glass، `surface-glass`، هدر/ناوبری مات، کارت‌ها و لندینگ؛ به‌روزرسانی [[concepts/frontend-ui]] / [[overview]] / [[index]] / [[concepts/tech-stack]]
+
 ## [2026-10-11] update | کامل‌شدن کنترل تغییر گروهی وضعیت فروشنده: endpoint و پنل اکنون همهٔ وضعیت‌های `ACTIVE`، `RESERVED`، `SOLD` و `REMOVED` را با همان گزارش نتیجهٔ جزئی پشتیبانی می‌کنند؛ ثبت قرارداد در [[entities/seller]].
 
 ## [2026-10-11] update | تکمیل دادهٔ سنجه‌های لانچ: بازشدن صفحهٔ آیتم تعامل `VIEW` و کلیک روی هر راه تماس فروشنده `CONTACT_SELLER` را ثبت می‌کند، بدون مسدودکردن مسیر تماس؛ ثبت قرارداد در [[entities/item]] و [[concepts/frontend-ui]].

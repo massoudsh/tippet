@@ -1,29 +1,59 @@
+import { AppShell } from "@/components/layout/app-shell";
+import { PageHeader } from "@/components/layout/page-header";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { ComingSoonBanner } from "@/components/ui/coming-soon";
+import { LinkButton } from "@/components/ui/button";
 import { catalogItems } from "@/lib/catalog";
 import { buildSimpleOutfit } from "@/lib/outfit";
+import { formatToman } from "@/lib/utils";
 
 const outfit = buildSimpleOutfit(catalogItems[0], catalogItems);
 
 export default function OutfitsPage() {
   return (
-    <main className="min-h-screen bg-slate-950 px-5 py-8 text-stone-50">
-      <section className="mx-auto max-w-6xl space-y-6">
-        <a className="text-sm text-stone-400 transition hover:text-white" href="/">بازگشت به تیپت</a>
-        <div className="rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 md:p-10">
-          <p className="text-sm font-black text-amber-200">Outfit Builder ساده</p>
-          <h1 className="mt-3 text-4xl font-black">ست پیشنهادی بر اساس یک آیتم anchor</h1>
-          <p className="mt-4 leading-8 text-stone-300">در فاز فعلی، یک آیتم اصلی انتخاب و دو آیتم مکمل از همان فید پیشنهاد می‌شود.</p>
-        </div>
-        <div className="grid gap-4 md:grid-cols-3">
-          {[outfit.anchor, ...outfit.complements].map((item, index) => (
-            <article key={item.id} className="rounded-3xl border border-white/10 bg-white/[0.06] p-5">
-              <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-stone-200">{index === 0 ? "آیتم اصلی" : "مکمل"}</span>
-              <h2 className="mt-5 text-xl font-black">{item.title}</h2>
-              <p className="mt-2 text-sm text-stone-400">{item.category} · {item.color} · {item.size}</p>
-              <p className="mt-4 font-bold">{item.price.toLocaleString("fa-IR")} تومان</p>
-            </article>
-          ))}
-        </div>
-      </section>
-    </main>
+    <AppShell active="none" className="space-y-6">
+      <PageHeader
+        eyebrow="Outfit Builder ساده"
+        title="ست پیشنهادی بر اساس یک آیتم اصلی"
+        description="در فاز فعلی یک آیتم اصلی انتخاب و دو آیتم مکمل از همان کاتالوگ پیشنهاد می‌شود."
+        actions={
+          <LinkButton href="/feed" variant="outline">
+            برو به فید
+          </LinkButton>
+        }
+      />
+
+      <ComingSoonBanner
+        eyebrow="فاز ۲"
+        title="ست‌سازی کامل هنوز آماده نیست"
+        description="نسخه ساده مکمل‌ها اینجاست؛ پیشنهاد ست کامل و تحلیل فرم بدن در فازهای بعد می‌آید."
+        phaseLabel="نسخه ساده فعال · کامل‌سازی به‌زودی"
+        primaryHref="/items/vintage-denim-jacket"
+        primaryLabel="دیدن آیتم اصلی"
+      />
+
+      <div className="grid gap-4 md:grid-cols-3">
+        {[outfit.anchor, ...outfit.complements].map((item, index) => (
+          <Card key={item.id}>
+            <CardContent className="space-y-4 p-5">
+              <Badge variant={index === 0 ? "brand" : "soft"}>{index === 0 ? "آیتم اصلی" : "مکمل"}</Badge>
+              <h2 className="text-xl font-display">{item.title}</h2>
+              <p className="text-sm text-muted-foreground">
+                {item.category} · {item.color} · {item.size}
+              </p>
+              <p className="font-semibold">{formatToman(item.price)}</p>
+              <LinkButton
+                href={item.id === "vintage-denim-jacket" ? "/items/vintage-denim-jacket" : "/feed"}
+                variant="outline"
+                size="sm"
+              >
+                مشاهده
+              </LinkButton>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </AppShell>
   );
 }

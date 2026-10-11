@@ -13,13 +13,14 @@
 - [[entities/style-tag]] — برچسب سبک + رابطه چندبه‌چند با آیتم
 - [[entities/interaction]] — رفتار کاربر روی آیتم‌ها (view/like/...)
 
-## Concepts (۵ صفحه)
+## Concepts (۶ صفحه)
 - [[concepts/ai-discovery]] — موتور کشف هوشمند (embedding + تطابق سلیقه)
 - [[concepts/ai-styling]] — پیشنهاد ست/آیتم مکمل
 - [[concepts/trust-building]] — اعتمادسازی خریدار-فروشنده
 - [[concepts/tech-stack]] — تصمیمات استک و دلایل
 - [[concepts/frontend-ui]] — قراردادها و رفتار رابط کاربری
 - [[concepts/roadmap-phases]] — فازها + لینک Milestone/Issue واقعی گیت‌هاب
+- [[concepts/frontend-ui]] — مسیرها، پوسته مشترک، تم شیشه‌ای Turquoise/VibeFarsi، وضعیت دکمه‌ها
 
 ## Log
 - [[log]] — تاریخچه append-only تغییرات این ویکی

@@ -5,7 +5,7 @@
 | فرانت‌اند + بک‌اند | Next.js 14 App Router, TypeScript | یک‌پارچه برای MVP سریع، بدون دو سرویس جدا |
 | دیتابیس | PostgreSQL + pgvector | جست‌وجوی شباهت برداری سلیقه↔آیتم |
 | ORM | Prisma | `web/prisma/schema.prisma`; `previewFeatures = ["postgresqlExtensions"]` برای pgvector |
-| استایل | Tailwind CSS، RTL کامل | فونت فارسی، جهت راست‌به‌چپ |
+| استایل | Tailwind CSS + تم Turquoise شیشه‌ای (VibeFarsi)، RTL کامل | Vazirmatn + Noto Kufi، توکن‌های glass، کامپوننت‌های `web/src/components` — [[concepts/frontend-ui]] |
 | تصاویر | Object Storage (S3-compatible/آروان‌کلود) | مشخص می‌شود در فاز بعد |
 | AI | لایه انتزاعی `AIPipelineClient` | provider قابل تعویض |
 | تست | Vitest (`web/vitest.config.ts`) | تست منطق خالص دامنه بدون دیتابیس |
@@ -30,6 +30,7 @@
 > `next build` محلی اجرا نشده و نباید اجرا شود (AGENTS.md).
 
 ## منابع کد
-- `web/package.json`, `web/prisma/schema.prisma`, `web/tailwind.config.ts`
+- `web/package.json`, `web/prisma/schema.prisma`, `web/tailwind.config.ts`, `web/src/app/globals.css`
+- `web/src/components/**`, `web/src/lib/utils.ts`
 - `.github/workflows/ci.yml`, `web/vitest.config.ts`, `web/.eslintrc.json`, `LICENSE`
 
