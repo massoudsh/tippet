@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getItemById } from "@/lib/items";
+import { ContactLink, ItemViewTracker } from "@/components/item-interactions";
 
 const conditionLabels = { NEW_WITH_TAG: "نو با تگ", LIKE_NEW: "در حد نو", GOOD: "خوب", FAIR: "قابل قبول" };
 
@@ -10,6 +11,7 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="min-h-screen bg-[#070a12] px-5 py-8 text-stone-50">
+      <ItemViewTracker itemId={item.id} />
       <section className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="grid gap-3 sm:grid-cols-2">
           {item.images.map((image) => <Image key={image.id} src={image.url} alt={item.title} width={768} height={576} className="h-72 w-full rounded-[2rem] object-cover" />)}
@@ -27,19 +29,15 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
             <h2 className="font-black">فروشنده</h2>
             <p className="mt-2 text-stone-300">{item.seller.name ?? "فروشنده تیپت"} · {item.seller.city ?? item.city}</p>
             <div className="mt-4 flex flex-wrap gap-3">
-              {item.seller.whatsappUrl ? <ContactLink href={item.seller.whatsappUrl} className="bg-emerald-300">تماس واتساپ</ContactLink> : <UnavailableContact>واتساپ ثبت نشده</UnavailableContact>}
-              {item.seller.telegramUrl ? <ContactLink href={item.seller.telegramUrl} className="bg-sky-300">پیام تلگرام</ContactLink> : <UnavailableContact>تلگرام ثبت نشده</UnavailableContact>}
-              {item.seller.contactPhone ? <ContactLink href={`tel:${item.seller.contactPhone}`} className="bg-white">تماس تلفنی</ContactLink> : null}
+              {item.seller.whatsappUrl ? <ContactLink itemId={item.id} href={item.seller.whatsappUrl} className="bg-emerald-300">تماس واتساپ</ContactLink> : <UnavailableContact>واتساپ ثبت نشده</UnavailableContact>}
+              {item.seller.telegramUrl ? <ContactLink itemId={item.id} href={item.seller.telegramUrl} className="bg-sky-300">پیام تلگرام</ContactLink> : <UnavailableContact>تلگرام ثبت نشده</UnavailableContact>}
+              {item.seller.contactPhone ? <ContactLink itemId={item.id} href={`tel:${item.seller.contactPhone}`} className="bg-white">تماس تلفنی</ContactLink> : null}
             </div>
           </div>
         </div>
       </section>
     </main>
   );
-}
-
-function ContactLink({ href, className, children }: { href: string; className: string; children: string }) {
-  return <a className={`rounded-2xl px-4 py-2 font-bold text-slate-950 ${className}`} href={href} target="_blank" rel="noreferrer">{children}</a>;
 }
 
 function UnavailableContact({ children }: { children: string }) {
