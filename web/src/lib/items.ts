@@ -103,7 +103,7 @@ export async function recordInteraction(userId: string, itemId: string, type: "V
 export const itemInclude = {
   category: true,
   images: { orderBy: { order: "asc" as const } },
-  seller: { select: { id: true, name: true, city: true, createdAt: true } },
+  seller: { select: { id: true, name: true, city: true, contactPhone: true, whatsappUrl: true, telegramUrl: true, createdAt: true } },
 } as const;
 
 function calculateListingCompleteness(input: z.infer<typeof itemInputSchema>) {

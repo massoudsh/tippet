@@ -23,11 +23,27 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
             <Info title="رنگ" value={item.color ?? "ثبت نشده"} /><Info title="وضعیت" value={conditionLabels[item.condition]} />
             <Info title="شهر" value={item.city} /><Info title="قیمت" value={`${item.price.toLocaleString("fa-IR")} تومان`} />
           </div>
-          <div className="rounded-3xl bg-white/10 p-5"><h2 className="font-black">فروشنده</h2><p className="mt-2 text-stone-300">{item.seller.name ?? "فروشنده تیپت"} · {item.seller.city ?? item.city}</p></div>
+          <div className="rounded-3xl bg-white/10 p-5">
+            <h2 className="font-black">فروشنده</h2>
+            <p className="mt-2 text-stone-300">{item.seller.name ?? "فروشنده تیپت"} · {item.seller.city ?? item.city}</p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              {item.seller.whatsappUrl ? <ContactLink href={item.seller.whatsappUrl} className="bg-emerald-300">تماس واتساپ</ContactLink> : <UnavailableContact>واتساپ ثبت نشده</UnavailableContact>}
+              {item.seller.telegramUrl ? <ContactLink href={item.seller.telegramUrl} className="bg-sky-300">پیام تلگرام</ContactLink> : <UnavailableContact>تلگرام ثبت نشده</UnavailableContact>}
+              {item.seller.contactPhone ? <ContactLink href={`tel:${item.seller.contactPhone}`} className="bg-white">تماس تلفنی</ContactLink> : null}
+            </div>
+          </div>
         </div>
       </section>
     </main>
   );
+}
+
+function ContactLink({ href, className, children }: { href: string; className: string; children: string }) {
+  return <a className={`rounded-2xl px-4 py-2 font-bold text-slate-950 ${className}`} href={href} target="_blank" rel="noreferrer">{children}</a>;
+}
+
+function UnavailableContact({ children }: { children: string }) {
+  return <span className="cursor-not-allowed rounded-2xl bg-white/10 px-4 py-2 text-sm font-bold text-stone-400" aria-disabled="true">{children}</span>;
 }
 
 function Info({ title, value }: { title: string; value: string }) {

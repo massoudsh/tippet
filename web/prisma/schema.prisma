@@ -22,10 +22,13 @@ enum UserRole {
 
 model User {
   id        String   @id @default(uuid())
-  phone     String   @unique
-  name      String?
-  role      UserRole @default(BUYER)
-  city      String?
+  phone           String   @unique
+  name            String?
+  role            UserRole @default(BUYER)
+  city            String?
+  contactPhone    String?
+  whatsappUrl     String?
+  telegramUrl     String?
   createdAt DateTime @default(now())
 
   styleProfile  StyleProfile?
