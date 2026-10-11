@@ -50,9 +50,14 @@ export default function HomePage() {
             <a className="transition hover:text-white" href="/checkout">پرداخت امن</a>
             <a className="transition hover:text-white" href="/revenue">درآمد</a>
           </nav>
-          <a className="rounded-full bg-amber-300 px-5 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-200" href="/auth">
-            ورود با موبایل
-          </a>
+          <div className="flex items-center gap-2">
+            <a className="hidden rounded-full border border-amber-200/30 px-4 py-2 text-sm font-bold text-amber-100 transition hover:bg-amber-200/10 sm:inline-flex" href="/demo">
+              دمو ۶۰ ثانیه‌ای
+            </a>
+            <a className="rounded-full bg-amber-300 px-5 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-200" href="/auth">
+              ورود با موبایل
+            </a>
+          </div>
         </header>
 
         <section className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
