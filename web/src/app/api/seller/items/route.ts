@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { ItemStatus } from "@prisma/client";
-import { z } from "zod";
 import { getSessionUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { summarizeSellerItems, calculateSellerTrustScore, type SellerPanelItem } from "@/lib/seller";
@@ -32,26 +30,6 @@ export async function GET() {
   });
 }
 
-export async function PATCH(request: Request) {
-  const user = await getSessionUser();
-  if (!user) return NextResponse.json({ error: "ورود لازم است." }, { status: 401 });
-
-  const schema = z.object({
-    itemIds: z.array(z.string().uuid()).min(1).max(50),
-    status: z.nativeEnum(ItemStatus),
-  });
-
-  try {
-    const { itemIds, status } = schema.parse(await request.json());
-    const result = await prisma.item.updateMany({
-      where: { id: { in: itemIds }, sellerId: user.id },
-      data: { status },
-    });
-    return NextResponse.json({ updated: result.count });
-  } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "به‌روزرسانی ناموفق بود." }, { status: 400 });
-  }
-}
 
 function readCompleteness(tags: unknown): number {
   if (tags && typeof tags === "object" && "completeness" in tags) {

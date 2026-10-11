@@ -5,6 +5,7 @@
 
 ## Entities (۷ صفحه)
 - [[entities/user]] — کاربر (خریدار/فروشنده)
+- [[entities/seller]] — دسترسی و عملیات پنل فروشنده
 - [[entities/style-profile]] — پروفایل سلیقه خریدار
 - [[entities/item]] — آیتم لباس (هسته مارکت‌پلیس)
 - [[entities/item-image]] — تصاویر آیتم
@@ -17,6 +18,7 @@
 - [[concepts/ai-styling]] — پیشنهاد ست/آیتم مکمل
 - [[concepts/trust-building]] — اعتمادسازی خریدار-فروشنده
 - [[concepts/tech-stack]] — تصمیمات استک و دلایل
+- [[concepts/frontend-ui]] — قراردادها و رفتار رابط کاربری
 - [[concepts/roadmap-phases]] — فازها + لینک Milestone/Issue واقعی گیت‌هاب
 
 ## Log

@@ -1,5 +1,7 @@
 # Log
 
+## [2026-10-11] update | افزودن تغییر گروهی وضعیت آگهی‌های فروشنده با endpoint احرازشده، اعتبارسنجی UUID و گزارش نتیجهٔ جزئی؛ ثبت قرارداد در [[entities/seller]]، [[entities/item]] و [[concepts/frontend-ui]]
+
 ## [2026-09-19] update | اولین اجرای واقعی CI روی PR #۲۴ سبز شد (۹/۹ گام: install → prisma generate → lint → type-check → test → build)؛ ثبت نتیجه در [[concepts/tech-stack]] و [[overview]] — یعنی `prisma generate` با فلگ `postgresqlExtensions` و `next build` روی اسکلت فعلی تأیید شدند
 
 ## [2026-09-19] update | بازبینی و همگام‌سازی ویکی با کامیت `41856db`: اصلاح ادعای کهنه در [[entities/interaction]] (منطق ساخت بردار سلیقه از `RecommendationService` به `matching.ts` منتقل شده)، افزودن `rankItems`/`cosineSimilarity` و شرح tie-break فید به [[entities/style-profile]]، تغییر گام نصب CI به شرطی (`npm ci` وقتی `package-lock.json` موجود است، وگرنه `npm install`) و مستندسازی آن + ثبت دقیق وضعیت تأیید در [[concepts/tech-stack]]؛ آینه‌ی GitHub Wiki هم با همین محتوا به‌روز شد

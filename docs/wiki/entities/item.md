@@ -17,6 +17,8 @@
 
 ## قراردادها / Edge cases
 - `status`: `ACTIVE`/`RESERVED`/`SOLD`/`REMOVED` — فروشنده باید بعد از فروش وضعیت را عوض کند.
+- `PATCH /api/seller/items/status` فقط برای صاحب نشست معتبر است و حداکثر ۵۰ UUID یکتا را با وضعیت `ACTIVE` یا `SOLD` می‌پذیرد؛ پاسخ تعداد `updated`، `unchanged` و `failed` را برای نتیجهٔ جزئی برمی‌گرداند.
+- آیتم‌های ناموجود یا متعلق به فروشندهٔ دیگر در bulk update تغییر نمی‌کنند و فقط در `failed` شمرده می‌شوند.
 - `itemEmbedding` مثل `tasteEmbedding` هنوز در schema فعال نشده (Issue #۱۸).
 - کیفیت عکس فروشنده مستقیم روی دقت `aiExtractedTags` اثر دارد (ریسک PRD بخش ۱۰؛ Issue #۲۱).
 
