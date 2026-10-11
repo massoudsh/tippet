@@ -34,20 +34,20 @@ export default function SellerPage() {
     setSelected((current) => current.includes(id) ? current.filter((itemId) => itemId !== id) : [...current, id]);
   }
 
-  async function markSelectedSold() {
+  async function updateSelectedStatus(status: SellerItemStatus) {
     if (!selected.length || bulkLoading) return;
 
     setBulkLoading(true);
     try {
-      const response = await fetch("/api/seller/items/status", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ itemIds: selected, status: "SOLD" }) });
+      const response = await fetch("/api/seller/items/status", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ itemIds: selected, status }) });
       const payload = await response.json();
       if (!response.ok) {
         setMessage(payload.error || "به‌روزرسانی ناموفق بود.");
         return;
       }
 
-      const notices = [`${payload.updated.toLocaleString("fa-IR")} آگهی به فروخته‌شده تغییر کرد.`];
-      if (payload.unchanged) notices.push(`${payload.unchanged.toLocaleString("fa-IR")} آگهی از قبل فروخته‌شده بود.`);
+      const notices = [`${payload.updated.toLocaleString("fa-IR")} آگهی به «${statusLabel[status]}» تغییر کرد.`];
+      if (payload.unchanged) notices.push(`${payload.unchanged.toLocaleString("fa-IR")} آگهی از قبل همین وضعیت را داشت.`);
       if (payload.failed) notices.push(`${payload.failed.toLocaleString("fa-IR")} آگهی در دسترس نبود.`);
       setMessage(notices.join(" "));
       setSelected([]);
@@ -67,7 +67,7 @@ export default function SellerPage() {
     <div className="grid gap-4 md:grid-cols-5"><Metric title="آگهی فعال" value={summary.active.toLocaleString("fa-IR")} /><Metric title="فروخته‌شده" value={summary.sold.toLocaleString("fa-IR")} /><Metric title="درخواست تماس" value={summary.contacts.toLocaleString("fa-IR")} /><Metric title="کامل‌بودن" value={`${summary.averageCompleteness.toLocaleString("fa-IR")}٪`} /><Metric title="امتیاز اعتماد" value={`${trustScore.toLocaleString("fa-IR")}٪`} /></div>
     <div className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-black/20">
       <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-center"><div><p className="text-sm font-black text-amber-200">پنل فروشنده</p><h1 className="mt-2 text-3xl font-black">مدیریت آگهی‌ها و وضعیت فروش</h1></div><a className="rounded-2xl bg-amber-300 px-5 py-3 text-center font-black text-slate-950" href="/seller/new">ثبت آگهی جدید</a></div>
-      <div className="mb-5 grid gap-3 rounded-3xl border border-white/10 bg-white/[0.04] p-4 md:grid-cols-3"><button disabled={bulkLoading} onClick={() => setSelected(items.filter((item) => item.status === "ACTIVE").map((item) => item.id))} className="rounded-2xl bg-white/10 px-4 py-3 text-sm font-bold text-stone-100 disabled:cursor-not-allowed disabled:opacity-50">انتخاب آگهی‌های فعال</button><button disabled={!selected.length || bulkLoading} aria-busy={bulkLoading} onClick={markSelectedSold} className="rounded-2xl bg-amber-300 px-4 py-3 text-sm font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-50">{bulkLoading ? "در حال تغییر وضعیت..." : "تغییر گروهی به فروخته‌شده"}</button><a className="rounded-2xl border border-white/10 px-4 py-3 text-center text-sm font-bold text-stone-100" href="/ingestion">ورود آگهی با مجوز</a></div>
+      <div className="mb-5 grid gap-3 rounded-3xl border border-white/10 bg-white/[0.04] p-4 md:grid-cols-6"><button disabled={bulkLoading} onClick={() => setSelected(items.filter((item) => item.status === "ACTIVE").map((item) => item.id))} className="rounded-2xl bg-white/10 px-4 py-3 text-sm font-bold text-stone-100 disabled:cursor-not-allowed disabled:opacity-50">انتخاب آگهی‌های فعال</button>{(["ACTIVE", "RESERVED", "SOLD", "REMOVED"] as const).map((status) => <button key={status} disabled={!selected.length || bulkLoading} aria-busy={bulkLoading} onClick={() => updateSelectedStatus(status)} className="rounded-2xl bg-amber-300 px-4 py-3 text-sm font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-50">{bulkLoading ? "در حال تغییر..." : `تغییر به ${statusLabel[status]}`}</button>)}<a className="rounded-2xl border border-white/10 px-4 py-3 text-center text-sm font-bold text-stone-100" href="/ingestion">ورود آگهی با مجوز</a></div>
       {message && <p role="status" className="mb-4 text-sm text-amber-100">{message}</p>}
       <div className="overflow-hidden rounded-3xl border border-white/10">{items.length === 0 ? <p className="p-8 text-center text-stone-400">هنوز آگهی ثبت نکرده‌اید.</p> : items.map((item) => <article key={item.id} className="grid gap-3 border-b border-white/10 bg-white/[0.04] p-4 last:border-b-0 md:grid-cols-[auto_1fr_auto_auto_auto] md:items-center"><input type="checkbox" disabled={bulkLoading} checked={selected.includes(item.id)} onChange={() => toggleItem(item.id)} className="size-4 accent-amber-300 disabled:cursor-not-allowed disabled:opacity-50" /><div><h2 className="font-black">{item.title}</h2><p className="mt-1 text-sm text-stone-400">{item.price.toLocaleString("fa-IR")} تومان · کامل‌بودن {item.completeness.toLocaleString("fa-IR")}٪</p></div><span className="rounded-full bg-white/10 px-3 py-1 text-sm text-stone-200">{statusLabel[item.status]}</span><span className="text-sm text-stone-300">{item.views.toLocaleString("fa-IR")} بازدید</span><span className="text-sm text-amber-100">{item.contacts.toLocaleString("fa-IR")} تماس</span></article>)}</div>
     </div>

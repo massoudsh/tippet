@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 const bulkStatusSchema = z.object({
   itemIds: z.array(z.string().uuid()).min(1).max(50).refine((ids) => new Set(ids).size === ids.length, "شناسه‌های آگهی تکراری هستند."),
-  status: z.enum(["ACTIVE", "SOLD"]),
+  status: z.enum(["ACTIVE", "RESERVED", "SOLD", "REMOVED"]),
 });
 
 export async function PATCH(request: Request) {
