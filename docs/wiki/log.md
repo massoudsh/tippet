@@ -1,5 +1,7 @@
 # Log
 
+## [2026-10-11] update | پیاده‌سازی رتبه‌بندی قواعدی فید با وزن‌های دسته، رنگ، سایز، بودجهٔ تدریجی و تازگی؛ افزودن تست و حالت‌های loading/error در `/feed` و مستندسازی فرمول در [[concepts/ai-discovery]]
+
 ## [2026-10-11] update | افزودن تغییر گروهی وضعیت آگهی‌های فروشنده با endpoint احرازشده، اعتبارسنجی UUID و گزارش نتیجهٔ جزئی؛ ثبت قرارداد در [[entities/seller]]، [[entities/item]] و [[concepts/frontend-ui]]
 
 ## [2026-09-19] update | اولین اجرای واقعی CI روی PR #۲۴ سبز شد (۹/۹ گام: install → prisma generate → lint → type-check → test → build)؛ ثبت نتیجه در [[concepts/tech-stack]] و [[overview]] — یعنی `prisma generate` با فلگ `postgresqlExtensions` و `next build` روی اسکلت فعلی تأیید شدند

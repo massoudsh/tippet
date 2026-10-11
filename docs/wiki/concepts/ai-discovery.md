@@ -15,17 +15,25 @@
 - `AIPipelineClient` — لایه انتزاعی فراخوانی Vision/Text/Embedding provider (هنوز پیاده‌سازی نشده).
 
 ## وضعیت پیاده‌سازی
-منطق خالص دامنه در `web/src/lib/matching.ts` پیاده‌سازی و تست شده است (Issue #۱۷):
-شباهت کسینوسی، ساخت `tasteEmbedding` از تعامل‌ها (آخرین N با وزن نزولی + وزن نوع تعامل)،
-و `matchScore`/`matchPercent`/`rankItems` بر پایه‌ی سیگنال‌های embedding/دسته/رنگ/بودجه/سایز.
-جزئیات وزن‌ها و رفتار cold start در [[entities/style-profile]].
+`web/src/lib/recommendation.ts` رتبه‌بند قواعدی فعلی فید را در اختیار دارد و `/feed` آن را روی آگهی‌های فعال اجرا می‌کند. تا زمانی که embeddingهای تولیدی آماده نیستند، وابستگی ML یا دانلود مدل ندارد.
 
-`web/src/lib/recommendation.ts` هنوز stub است (`return []`) و در فاز بعد همان توابع بالا را روی
-داده‌ی واقعی اجرا می‌کند. ستون‌های embedding در `schema.prisma` comment شده‌اند تا فعال شوند
-(Issue #۱۸)؛ فلگ preview مربوط به pgvector در بلوک generator فعال شده است ([[concepts/tech-stack]]).
-پیگیری فیچر: Issue #۳ «فید کشف هوشمند».
+### فرمول رتبه‌بندی فعلی
+امتیاز کشف هر آگهی از ۱۰۰ محاسبه می‌شود:
+
+- **دسته: ۳۰ امتیاز** برای تطابق دقیق با `preferredCategories`.
+- **سبک صریح: ۲۵ امتیاز** شامل رنگ ۱۵ و سایز ۱۰؛ سایز `Free` با هر پروفایل سازگار است.
+- **بودجه: ۲۵ امتیاز** برای قیمت داخل بازه؛ بیرون از بازه به‌صورت تدریجی با نسبت `price / budgetMin` یا `budgetMax / price` کاهش می‌یابد.
+- **تازگی: ۲۰ امتیاز** برای آگهی حداکثر ۷ روزه، ۱۲ امتیاز تا ۳۰ روز، و ۵ امتیاز برای آگهی قدیمی‌تر.
+
+ترتیب نهایی نزولی بر اساس امتیاز است؛ در تساوی، آگهی جدیدتر و سپس `itemId` مقدم است. بدون پروفایل، تنها تازگی رتبه را تعیین می‌کند تا cold start همچنان فید قابل‌استفاده‌ای داشته باشد. رابط `/feed` حالت‌های loading، empty و error جداگانه دارد.
+
+منطق embedding در `web/src/lib/matching.ts` و تست‌هایش برای فاز بعدی باقی می‌ماند؛ وقتی ستون‌های pgvector و خط لولهٔ تولید embedding آماده شدند، سیگنال embedding باید به فرمول بالا افزوده و وزن‌ها دوباره ارزیابی شوند.
 
 ## منابع کد
 - `web/src/lib/recommendation.ts`
-- `web/src/lib/matching.ts` و `web/src/lib/matching.test.ts`
+- `web/src/lib/recommendation.test.ts`
+- `web/src/app/feed/page.tsx`
+- `web/src/app/feed/loading.tsx`
+- `web/src/app/feed/error.tsx`
+- `web/src/lib/matching.ts`
 - `web/prisma/schema.prisma:48` و `:113` (کامنت‌های embedding)
