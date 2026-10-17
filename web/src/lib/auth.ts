@@ -82,6 +82,7 @@ export async function verifyOtpChallenge(phoneInput: string, code: string) {
     data: { consumedAt: new Date(), userId: user.id },
   });
 
+  await prisma.session.deleteMany({ where: { userId: user.id } });
   const rawToken = randomBytes(32).toString("base64url");
   await prisma.session.create({
     data: {

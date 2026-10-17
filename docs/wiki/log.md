@@ -1,5 +1,7 @@
 # Log
 
+## [2026-10-17] update | سخت‌سازی production: CSRF هم‌مبدأ برای APIهای تغییردهنده، چرخش session هنگام OTP، هدرهای امنیتی، لاگ ساختاریافتهٔ queryهای DB، workflowهای CodeQL/Semgrep/Gitleaks/SBOM، Dependabot و مستند معماری/threat model؛ ثبت در [[overview]] و [[concepts/tech-stack]]
+
 ## [2026-10-11] update | انتقال UI به تم شیشه‌ای Turquoise (VibeFarsi): توکن‌های glass، `surface-glass`، هدر/ناوبری مات، کارت‌ها و لندینگ؛ به‌روزرسانی [[concepts/frontend-ui]] / [[overview]] / [[index]] / [[concepts/tech-stack]]
 
 ## [2026-10-11] update | کامل‌شدن کنترل تغییر گروهی وضعیت فروشنده: endpoint و پنل اکنون همهٔ وضعیت‌های `ACTIVE`، `RESERVED`، `SOLD` و `REMOVED` را با همان گزارش نتیجهٔ جزئی پشتیبانی می‌کنند؛ ثبت قرارداد در [[entities/seller]].

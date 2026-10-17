@@ -27,6 +27,18 @@ npm --prefix web test
 - در production اگر storage تنظیم نشده باشد، آپلود تصویر عمداً رد می‌شود؛ local storage فقط برای development است.
 - قبل از اجرا، `npx prisma migrate deploy` را اجرا کنید.
 
+## معماری و امنیت
+
+- معماری و جریان داده: [`ARCHITECTURE.md`](ARCHITECTURE.md).
+- درخواست‌های تغییردهندهٔ API فقط از مبدأ همسان پذیرفته می‌شوند؛ sessionها در cookie HTTP-only و SameSite نگهداری می‌شوند.
+- ورود موفق OTP، sessionهای قبلی کاربر را باطل و session جدید ایجاد می‌کند.
+- CI علاوه بر lint، type-check، تست و build، اسکن secret، CodeQL، Semgrep و SBOM تولید می‌کند.
+- وابستگی‌های npm و GitHub Actions با Dependabot به‌صورت هفتگی/ماهانه بررسی می‌شوند.
+
+## ارزیابی AI
+
+رتبه‌بندی فعلی فید rule-based و قابل‌تکرار است. تغییرات رتبه‌بندی باید با fixture ثابت و معیارهای precision@5/10، نرخ نقض بودجه، تطابق دسته/سایز، cold-start و latency ارزیابی شوند. embedding تا زمان تکمیل ارزیابی آفلاین، مسیر rollback و بررسی حریم خصوصی فعال نمی‌شود.
+
 ## وضعیت MVP
 
 - CI وب برای lint، type-check، تست و build فعال است.

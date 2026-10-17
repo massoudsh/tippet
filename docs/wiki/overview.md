@@ -34,7 +34,7 @@ comment‌اند)، APIهای OTP/آیتم/پروفایل سلیقه/تعامل�
 سلیقه است. فیچرهای فاز ۲/۳ (escrow، چت داخلی، ingestion خودکار، ست‌سازی کامل) با الگوی coming-soon
 صیقلی در UI نگه داشته شده‌اند.
 
-زیرساخت مهندسی: CI گیت‌هاب (lint + type-check + test + build روی Node 20)، Vitest برای منطق دامنه در
+زیرساخت مهندسی: CI گیت‌هاب (lint + type-check + test + build روی Node 20.11.1) و workflow امنیتی برای CodeQL، Semgrep، Gitleaks و SBOM؛ Dependabot نیز وابستگی‌های npm و GitHub Actions را پایش می‌کند. Vitest برای منطق دامنه در
 `web/src/lib/matching.ts` و مجوز Apache-2.0. جزئیات در [[concepts/tech-stack]] و [[concepts/ai-discovery]].
 
 ## اسناد مرجع
