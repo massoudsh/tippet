@@ -24,9 +24,12 @@ export const itemSearchSchema = z.object({
   city: z.string().trim().max(64).optional(),
   category: z.string().trim().max(64).optional(),
   size: z.string().trim().max(32).optional(),
-  minPrice: z.coerce.number().int().nonnegative().optional(),
-  maxPrice: z.coerce.number().int().positive().optional(),
+  minPrice: z.preprocess((value) => value === "" ? undefined : value, z.coerce.number().int().nonnegative().optional()),
+  maxPrice: z.preprocess((value) => value === "" ? undefined : value, z.coerce.number().int().positive().optional()),
   status: itemStatusSchema.optional(),
+}).refine((filters) => filters.minPrice === undefined || filters.maxPrice === undefined || filters.minPrice <= filters.maxPrice, {
+  message: "حداقل قیمت نباید بیشتر از حداکثر قیمت باشد.",
+  path: ["maxPrice"],
 });
 
 export async function createItem(sellerId: string, input: z.infer<typeof itemInputSchema>) {

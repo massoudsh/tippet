@@ -1,5 +1,7 @@
 # Log
 
+## [2026-10-26] update | بازبینی رقابتی/UI و اصلاح فیلتر جست‌وجو: فیلدهای خالی قیمت دیگر خطا نمی‌دهند و محدودهٔ معکوس پیام بازیابی نشان می‌دهد، فیلتر سایز و حداقل قیمت به فرم اضافه شد (هر دو از قبل در `items.ts` بودند)، لینک پرش به محتوا و اصلاح حالت فعال ناوبری؛ ثبت در [[concepts/frontend-ui]]
+
 ## [2026-10-17] update | سخت‌سازی production: CSRF هم‌مبدأ برای APIهای تغییردهنده، چرخش session هنگام OTP، هدرهای امنیتی، لاگ ساختاریافتهٔ queryهای DB، workflowهای CodeQL/Semgrep/Gitleaks/SBOM، Dependabot و مستند معماری/threat model؛ ثبت در [[overview]] و [[concepts/tech-stack]]
 
 ## [2026-10-11] update | انتقال UI به تم شیشه‌ای Turquoise (VibeFarsi): توکن‌های glass، `surface-glass`، هدر/ناوبری مات، کارت‌ها و لندینگ؛ به‌روزرسانی [[concepts/frontend-ui]] / [[overview]] / [[index]] / [[concepts/tech-stack]]

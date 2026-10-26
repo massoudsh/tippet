@@ -31,9 +31,9 @@ export function SiteHeader({ active = "none", compact = false }: { active?: Acti
               href={link.href}
               className={cn(
                 "rounded-control px-3 py-1.5 transition-all duration-motion ease-motion hover:bg-accent hover:text-foreground",
-                active === link.key && "bg-accent font-semibold text-foreground shadow-control",
+                active !== "none" && active === link.key && "bg-accent font-semibold text-foreground shadow-control",
               )}
-              aria-current={active === link.key ? "page" : undefined}
+              aria-current={active !== "none" && active === link.key ? "page" : undefined}
             >
               {link.label}
             </a>

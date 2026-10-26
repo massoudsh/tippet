@@ -24,8 +24,11 @@ export function AppShell({
         <div className="absolute -right-16 bottom-24 size-80 rounded-full bg-brand/15 blur-3xl" />
         <div className="absolute left-1/3 top-1/2 size-56 -translate-y-1/2 rounded-full bg-ring/10 blur-3xl" />
       </div>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:rounded-control focus:bg-background focus:p-3">
+        رفتن به محتوای اصلی
+      </a>
       <SiteHeader active={active} compact={compactHeader} />
-      <main className={cn("mx-auto w-full max-w-6xl px-4 pb-28 pt-6 sm:px-6", className)}>{children}</main>
+      <main id="main-content" tabIndex={-1} className={cn("mx-auto w-full max-w-6xl px-4 pb-28 pt-6 sm:px-6", className)}>{children}</main>
       {showBottomNav && <BottomNav active={active} />}
     </div>
   );

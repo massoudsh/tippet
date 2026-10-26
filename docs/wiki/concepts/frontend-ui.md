@@ -18,7 +18,7 @@
 | `/auth` | OTP موبایل | دو مرحله شماره/کد، اعتبارسنجی ۰۹، loading/error |
 | `/onboarding` | پروفایل سلیقه | فرم چندمرحله‌ای → `PUT /api/style-profile` |
 | `/feed` | کشف | رتبه‌بندی واقعی آیتم‌ها + empty/auth alerts |
-| `/search` | فیلتر | فرم GET + empty state |
+| `/search` | فیلتر | فرم GET + فیلتر عبارت/شهر/دسته/سایز/حداقل و حداکثر قیمت + empty/error state |
 | `/items/[id]` | جزئیات واقعی | تصاویر، مشخصات، `ItemActions` (LIKE/SAVE/CONTACT) |
 | `/items/vintage-denim-jacket` | دمو کاتالوگ | تماس واتساپ/تلگرام؛ escrow/chat غیرفعال |
 | `/profile` | سلیقه ذخیره‌شده | خواندن از DB + logout |

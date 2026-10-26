@@ -16,16 +16,17 @@ export default async function SearchPage({
   const raw = Object.fromEntries(
     Object.entries(searchParams).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value]),
   );
-  const filters = itemSearchSchema.parse(raw);
-  const items = await listItems(filters);
-  const hasFilters = Boolean(filters.q || filters.city || filters.category || filters.maxPrice);
+  const parsed = itemSearchSchema.safeParse(raw);
+  const filters = parsed.success ? parsed.data : itemSearchSchema.parse({});
+  const items = parsed.success ? await listItems(filters) : [];
+  const hasFilters = Boolean(filters.q || filters.city || filters.category || filters.size || filters.minPrice || filters.maxPrice);
 
   return (
     <AppShell active="search" className="space-y-6">
       <PageHeader
         eyebrow="جست‌وجو و فیلتر"
         title="آگهی‌های فعال را پیدا کن"
-        description="عبارت، شهر، دسته و سقف قیمت را تنظیم کن تا نتایج دقیق‌تری ببینی."
+        description="عبارت، شهر، دسته، سایز و محدودهٔ قیمت را تنظیم کن تا نتایج دقیق‌تری ببینی."
       />
 
       <Card>
@@ -41,11 +42,18 @@ export default async function SearchPage({
               <Field label="دسته" htmlFor="category">
                 <Input id="category" name="category" defaultValue={filters.category ?? ""} placeholder="کت" />
               </Field>
+              <Field label="سایز" htmlFor="size">
+                <Input id="size" name="size" defaultValue={filters.size ?? ""} placeholder="مثلاً M" />
+              </Field>
+              <Field label="حداقل قیمت (تومان)" htmlFor="minPrice">
+                <Input id="minPrice" name="minPrice" type="number" min={0} dir="ltr" inputMode="numeric" defaultValue={filters.minPrice ?? ""} />
+              </Field>
               <Field label="حداکثر قیمت (تومان)" htmlFor="maxPrice">
                 <Input
                   id="maxPrice"
                   name="maxPrice"
                   type="number"
+                  min={1}
                   dir="ltr"
                   inputMode="numeric"
                   defaultValue={filters.maxPrice ?? ""}
@@ -76,7 +84,11 @@ export default async function SearchPage({
         </LinkButton>
       </div>
 
-      {items.length === 0 ? (
+      {!parsed.success ? (
+        <p role="alert" className="rounded-surface border border-destructive p-4">
+          فیلترها معتبر نیستند. قیمت‌ها را بررسی کن یا <a href="/search" className="underline">فیلترها را پاک کن</a>.
+        </p>
+      ) : items.length === 0 ? (
         <EmptyState
           title={hasFilters ? "آگهی مطابق فیلترها پیدا نشد" : "هنوز آگهی برای جست‌وجو نیست"}
           description={
