@@ -45,7 +45,7 @@
   --depth-field: 0 0 #0000;
   --depth-surface: 0 1px 0 0 oklch(1 0 0 / 18%) inset, 0 30px 60px -30px oklch(0.08 0.03 230 / 70%);
   --depth-overlay: 0 1px 0 0 oklch(1 0 0 / 20%) inset, 0 30px 70px -24px oklch(0.08 0.03 230 / 80%);
-  --surface-filter: blur(20px) saturate(1.6);
+  --surface-filter: blur(8px) saturate(1.1);
   --press: scale(0.97);
   --motion: 280ms;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -58,9 +58,78 @@
 }
 
 @layer base {
-  html,
+  :root {
+    --surface-subtle: var(--background);
+    --surface-medium: var(--background);
+    --surface-elevated: var(--popover);
+    --layer-navigation: 40;
+    --layer-overlay: 50;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --background: #f1f7f7;
+    --foreground: #132e35;
+    --card: #ffffffed;
+    --card-foreground: #132e35;
+    --popover: #ffffff;
+    --popover-foreground: #132e35;
+    --primary: #09665e;
+    --primary-foreground: #ffffff;
+    --secondary: #ddebea;
+    --secondary-foreground: #132e35;
+    --muted: #e4eeee;
+    --muted-foreground: #425c63;
+    --accent: #d5e9e5;
+    --accent-foreground: #132e35;
+    --destructive: #aa2637;
+    --success: #176740;
+    --warning: #805200;
+    --border: #8aa5a9;
+    --input: #6f8f95;
+    --ring: #09665e;
+    --brand: #09665e;
+    --brand-foreground: #ffffff;
+    --field: #ffffff;
+    --backdrop: none;
+    --depth-surface: 0 8px 24px #132e3510;
+    --depth-overlay: 0 12px 32px #132e3520;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]):not([data-theme="light"]) {
+      color-scheme: light;
+      --background: #f1f7f7;
+      --foreground: #132e35;
+      --card: #ffffffed;
+      --card-foreground: #132e35;
+      --popover: #ffffff;
+      --popover-foreground: #132e35;
+      --primary: #09665e;
+      --primary-foreground: #ffffff;
+      --secondary: #ddebea;
+      --secondary-foreground: #132e35;
+      --muted: #e4eeee;
+      --muted-foreground: #425c63;
+      --accent: #d5e9e5;
+      --accent-foreground: #132e35;
+      --destructive: #aa2637;
+      --success: #176740;
+      --warning: #805200;
+      --border: #8aa5a9;
+      --input: #6f8f95;
+      --ring: #09665e;
+      --brand: #09665e;
+      --brand-foreground: #ffffff;
+      --field: #ffffff;
+      --backdrop: none;
+      --depth-surface: 0 8px 24px #132e3510;
+      --depth-overlay: 0 12px 32px #132e3520;
+    }
+  }
+
   body {
-    direction: rtl;
+    direction: inherit;
     margin: 0;
     min-height: 100%;
     background-color: var(--background);
@@ -142,6 +211,10 @@
     backdrop-filter: var(--surface-filter);
     -webkit-backdrop-filter: var(--surface-filter);
     box-shadow: var(--depth-overlay);
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    .surface-glass, .surface-glass-strong { background: var(--background); }
   }
 
   .ease-motion {

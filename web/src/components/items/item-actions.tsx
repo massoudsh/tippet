@@ -8,6 +8,7 @@ interface ItemActionsProps {
   itemId: string;
   whatsappUrl?: string | null;
   telegramUrl?: string | null;
+  available?: boolean;
   showPhase2Links?: boolean;
 }
 
@@ -15,6 +16,7 @@ export function ItemActions({
   itemId,
   whatsappUrl,
   telegramUrl,
+  available = true,
   showPhase2Links = false,
 }: ItemActionsProps) {
   const [message, setMessage] = useState("");
@@ -22,6 +24,7 @@ export function ItemActions({
   const [loading, setLoading] = useState<"like" | "save" | "contact" | null>(null);
 
   async function interact(type: "LIKE" | "SAVE" | "CONTACT_SELLER") {
+    if (loading || (type === "CONTACT_SELLER" && !available)) return;
     setLoading(type === "LIKE" ? "like" : type === "SAVE" ? "save" : "contact");
     setMessage("");
     setError("");
@@ -50,34 +53,31 @@ export function ItemActions({
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
-        <Button variant="brand" loading={loading === "like"} onClick={() => interact("LIKE")}>
+        <Button disabled={loading !== null} variant="brand" loading={loading === "like"} onClick={() => interact("LIKE")}>
           پسندیدن
         </Button>
-        <Button variant="secondary" loading={loading === "save"} onClick={() => interact("SAVE")}>
+        <Button disabled={loading !== null} variant="secondary" loading={loading === "save"} onClick={() => interact("SAVE")}>
           ذخیره
-        </Button>
-        <Button variant="outline" loading={loading === "contact"} onClick={() => interact("CONTACT_SELLER")}>
-          ثبت تماس با فروشنده
         </Button>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {whatsappUrl ? (
-          <LinkButton href={whatsappUrl} variant="outline" target="_blank" rel="noreferrer">
+        {available && whatsappUrl ? (
+          <LinkButton href={whatsappUrl} variant="outline" target="_blank" rel="noreferrer" onClick={() => void interact("CONTACT_SELLER")}>
             واتساپ فروشنده
           </LinkButton>
         ) : (
           <Button variant="outline" disabled title="لینک واتساپ هنوز ثبت نشده">
-            واتساپ (به‌زودی)
+            واتساپ (در دسترس نیست)
           </Button>
         )}
-        {telegramUrl ? (
-          <LinkButton href={telegramUrl} variant="outline" target="_blank" rel="noreferrer">
+        {available && telegramUrl ? (
+          <LinkButton href={telegramUrl} variant="outline" target="_blank" rel="noreferrer" onClick={() => void interact("CONTACT_SELLER")}>
             تلگرام فروشنده
           </LinkButton>
         ) : (
           <Button variant="outline" disabled title="لینک تلگرام هنوز ثبت نشده">
-            تلگرام (به‌زودی)
+            تلگرام (در دسترس نیست)
           </Button>
         )}
         {showPhase2Links && (

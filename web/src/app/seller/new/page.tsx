@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Alert } from "@/components/ui/alert";
@@ -12,33 +12,49 @@ export default function NewSellerItemPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [fileCount, setFileCount] = useState(0);
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [uploaded, setUploaded] = useState(0);
+  const uploadedUrls = useRef(new Map<File, string>());
+  useEffect(() => {
+    const urls = files.map((file) => URL.createObjectURL(file));
+    setPreviews(urls);
+    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+  }, [files]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (loading) return;
     setLoading(true);
     setMessage("");
     setError("");
     const form = new FormData(event.currentTarget);
-    const images = form.getAll("images").filter((value): value is File => value instanceof File && value.size > 0);
+    const images = files;
 
-    if (images.length === 0) {
-      setError("حداقل یک تصویر لازم است.");
+    if (images.length === 0 || images.length > 8 || images.some((file) => !["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8 * 1024 * 1024 || file.size === 0)) {
+      setError("۱ تا ۸ تصویر JPG، PNG یا WebP، هرکدام حداکثر ۸ مگابایت انتخاب کن.");
       setLoading(false);
       return;
     }
 
     try {
-      const imageUrls = await Promise.all(
-        images.map(async (image) => {
+      const imageUrls: string[] = [];
+      setUploaded(0);
+      for (const image of images) {
+        let url = uploadedUrls.current.get(image);
+        if (!url) {
           const upload = new FormData();
           upload.set("image", image);
           const response = await fetch("/api/items/upload", { method: "POST", body: upload });
           const payload = await response.json();
-          if (!response.ok) throw new Error(payload.error || "آپلود تصویر ناموفق بود.");
-          return payload.url as string;
-        }),
-      );
+          if (response.status === 401) throw new Error("برای ثبت آگهی ابتدا وارد شو.");
+          if (!response.ok) throw new Error(payload.error || "آپلود تصویر ناموفق بود؛ دوباره ثبت را بزن.");
+          url = payload.url as string;
+          uploadedUrls.current.set(image, url);
+        }
+        imageUrls.push(url);
+        setUploaded(imageUrls.length);
+      }
 
       const response = await fetch("/api/items", {
         method: "POST",
@@ -77,7 +93,7 @@ export default function NewSellerItemPage() {
       <PageHeader
         eyebrow="ثبت آیتم"
         title="آگهی واقعی بساز و تصویرهایش را ذخیره کن"
-        description="پس از ورود، تصویرها ذخیره می‌شوند و آگهی در PostgreSQL ثبت می‌شود."
+        description="عکس‌ها و مشخصات واقعی کالا را اضافه کن، بررسی کن و منتشر کن."
         actions={
           <LinkButton href="/seller" variant="outline">
             بازگشت به پنل
@@ -96,7 +112,7 @@ export default function NewSellerItemPage() {
             <p>• نمای جلو، پشت، برچسب سایز و ایرادهای احتمالی را جدا ثبت کن</p>
             <p>• توضیح حداقل ۲۰ کاراکتر؛ برند و جنس اختیاری‌اند ولی کمک‌کننده‌اند</p>
             <Alert variant="info" title="نیاز به ورود">
-              اگر وارد نباشی، API ثبت آگهی خطای ۴۰۱ برمی‌گرداند.
+              برای انتشار وارد حساب شو. در صورت خطا اطلاعات فرم را نگه دار و دوباره تلاش کن.
             </Alert>
           </CardContent>
         </Card>
@@ -105,7 +121,7 @@ export default function NewSellerItemPage() {
           <CardContent className="p-5 sm:p-6">
             <form onSubmit={submit} className="space-y-4">
               <Field label="عنوان" htmlFor="title">
-                <Input id="title" name="title" required defaultValue="کت جین آبی" />
+                <Input id="title" name="title" required minLength={3} maxLength={120} placeholder="مثلاً کت جین آبی" />
               </Field>
               <Field label="توضیح" htmlFor="description" hint="حداقل ۲۰ کاراکتر">
                 <Textarea
@@ -113,33 +129,35 @@ export default function NewSellerItemPage() {
                   name="description"
                   required
                   minLength={20}
-                  defaultValue="کت جین سالم سایز M، مناسب استریت‌ویر و وینتیج."
+                  maxLength={4000}
+                  placeholder="اندازه، وضعیت و ایرادهای احتمالی کالا را بنویس."
                 />
               </Field>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="دسته" htmlFor="category">
-                  <Input id="category" name="category" required defaultValue="کت" />
+                  <Input id="category" name="category" required minLength={2} maxLength={64} placeholder="مثلاً کت" />
                 </Field>
                 <Field label="شهر" htmlFor="city">
-                  <Input id="city" name="city" required defaultValue="تهران" />
+                  <Input id="city" name="city" required minLength={2} maxLength={64} placeholder="مثلاً تهران" />
                 </Field>
                 <Field label="سایز" htmlFor="size">
-                  <Input id="size" name="size" defaultValue="M" />
+                  <Input id="size" name="size" placeholder="مثلاً M" />
                 </Field>
                 <Field label="رنگ" htmlFor="color">
-                  <Input id="color" name="color" defaultValue="آبی" />
+                  <Input id="color" name="color" placeholder="مثلاً آبی" />
                 </Field>
                 <Field label="برند" htmlFor="brand">
                   <Input id="brand" name="brand" placeholder="اختیاری" />
                 </Field>
                 <Field label="جنس" htmlFor="material">
-                  <Input id="material" name="material" defaultValue="جین" />
+                  <Input id="material" name="material" placeholder="مثلاً جین" />
                 </Field>
                 <Field label="قیمت (تومان)" htmlFor="price">
-                  <Input id="price" name="price" type="number" dir="ltr" required defaultValue="1480000" />
+                  <Input id="price" name="price" type="number" dir="ltr" required min={1} max={1000000000} step={1} />
                 </Field>
                 <Field label="وضعیت کالا" htmlFor="condition">
-                  <Select id="condition" name="condition" defaultValue="GOOD">
+                  <Select id="condition" name="condition" required defaultValue="">
+                    <option value="" disabled>وضعیت را انتخاب کن</option>
                     <option value="NEW_WITH_TAG">نو با تگ</option>
                     <option value="LIKE_NEW">در حد نو</option>
                     <option value="GOOD">خوب</option>
@@ -150,7 +168,7 @@ export default function NewSellerItemPage() {
               <Field
                 label="تصویرها"
                 htmlFor="images"
-                hint={fileCount > 0 ? `${fileCount} فایل انتخاب شده` : "JPG، PNG یا WebP"}
+                hint="۱ تا ۸ تصویر؛ هر فایل حداکثر ۸ مگابایت"
               >
                 <Input
                   id="images"
@@ -158,10 +176,21 @@ export default function NewSellerItemPage() {
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   multiple
-                  required
-                  onChange={(e) => setFileCount(e.target.files?.length ?? 0)}
+                  disabled={loading}
+                  onChange={(e) => { setFiles(Array.from(e.target.files ?? [])); setUploaded(0); }}
                 />
               </Field>
+              <div className="grid grid-cols-2 gap-3">
+                {files.map((file, index) => <div key={`${file.name}-${index}`} className="rounded-control border border-border p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {previews[index] && <img src={previews[index]} alt={`پیش‌نمایش ${file.name}`} width={200} height={150} className="aspect-[4/3] w-full object-contain" />}
+                  <p className="truncate text-xs" dir="auto">{file.name}</p>
+                  <Button type="button" variant="ghost" disabled={loading} onClick={() => setFiles(files.filter((_, i) => i !== index))}>حذف تصویر {index + 1}</Button>
+                  <Button type="button" variant="outline" disabled={loading || index === 0} onClick={() => setFiles([file, ...files.filter((_, i) => i !== index)])}>تصویر اصلی</Button>
+                </div>)}
+              </div>
+              {loading && <p role="status">تصویرهای بارگذاری‌شده: {uploaded} از {files.length}</p>}
+              <label className="flex items-start gap-2 text-sm"><input type="checkbox" required className="mt-2" />مشخصات و تصویرها را بررسی کرده‌ام و حق انتشار آن‌ها را دارم. اطلاعات پیشنهادی خودکار در این نسخه فعال نیست.</label>
               <Button type="submit" className="w-full" loading={loading}>
                 ثبت آگهی
               </Button>

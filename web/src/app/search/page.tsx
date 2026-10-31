@@ -1,3 +1,4 @@
+import { conditionLabels } from "@/lib/product-labels";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { ItemCard } from "@/components/items/item-card";
@@ -34,19 +35,19 @@ export default async function SearchPage({
           <form action="/search" className="space-y-4" method="get">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Field label="عبارت جست‌وجو" htmlFor="q">
-                <Input id="q" name="q" defaultValue={filters.q ?? ""} placeholder="مثلاً کت جین" />
+                <Input id="q" name="q" defaultValue={raw.q ?? ""} placeholder="مثلاً کت جین" />
               </Field>
               <Field label="شهر" htmlFor="city">
-                <Input id="city" name="city" defaultValue={filters.city ?? ""} placeholder="تهران" />
+                <Input id="city" name="city" defaultValue={raw.city ?? ""} placeholder="تهران" />
               </Field>
               <Field label="دسته" htmlFor="category">
-                <Input id="category" name="category" defaultValue={filters.category ?? ""} placeholder="کت" />
+                <Input id="category" name="category" defaultValue={raw.category ?? ""} placeholder="کت" />
               </Field>
               <Field label="سایز" htmlFor="size">
-                <Input id="size" name="size" defaultValue={filters.size ?? ""} placeholder="مثلاً M" />
+                <Input id="size" name="size" defaultValue={raw.size ?? ""} placeholder="مثلاً M" />
               </Field>
               <Field label="حداقل قیمت (تومان)" htmlFor="minPrice">
-                <Input id="minPrice" name="minPrice" type="number" min={0} dir="ltr" inputMode="numeric" defaultValue={filters.minPrice ?? ""} />
+                <Input id="minPrice" name="minPrice" type="number" min={0} dir="ltr" inputMode="numeric" defaultValue={raw.minPrice ?? ""} />
               </Field>
               <Field label="حداکثر قیمت (تومان)" htmlFor="maxPrice">
                 <Input
@@ -56,7 +57,7 @@ export default async function SearchPage({
                   min={1}
                   dir="ltr"
                   inputMode="numeric"
-                  defaultValue={filters.maxPrice ?? ""}
+                  defaultValue={raw.maxPrice ?? ""}
                   placeholder="2000000"
                 />
               </Field>
@@ -73,6 +74,12 @@ export default async function SearchPage({
         </CardContent>
       </Card>
 
+      <nav aria-label="فیلترهای فعال" className="flex flex-wrap gap-2">
+        {Object.entries({ q: "عبارت", city: "شهر", category: "دسته", size: "سایز", minPrice: "حداقل قیمت", maxPrice: "حداکثر قیمت" }).filter(([key]) => raw[key]).map(([key, label]) => {
+          const next = new URLSearchParams(Object.entries(raw).filter(([name, value]) => name !== key && value !== undefined) as [string, string][]);
+          return <LinkButton key={key} href={`/search?${next}`} variant="outline" size="sm" aria-label={`حذف فیلتر ${label}`}>{label}: <bdi>{raw[key]}</bdi> ×</LinkButton>;
+        })}
+      </nav>
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
           {items.length === 0
@@ -115,7 +122,7 @@ export default async function SearchPage({
               key={item.id}
               href={`/items/${item.id}`}
               title={item.title}
-              meta={`${item.category.name} · ${item.size ?? "سایز ثبت نشده"} · ${item.condition}`}
+              meta={`${item.category.name} · ${item.size ?? "سایز ثبت نشده"} · ${conditionLabels[item.condition]}`}
               price={item.price}
               imageUrl={item.images[0]?.url}
             />

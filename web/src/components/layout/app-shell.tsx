@@ -1,10 +1,11 @@
+import { OfflineNotice } from "./offline-notice";
 import { cn } from "@/lib/utils";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { SiteHeader } from "@/components/layout/site-header";
 
 interface AppShellProps {
   children: React.ReactNode;
-  active?: "home" | "feed" | "search" | "seller" | "profile" | "none";
+  active?: "home" | "feed" | "search" | "seller" | "profile" | "closet" | "outfits" | "none";
   className?: string;
   showBottomNav?: boolean;
   compactHeader?: boolean;
@@ -28,7 +29,7 @@ export function AppShell({
         رفتن به محتوای اصلی
       </a>
       <SiteHeader active={active} compact={compactHeader} />
-      <main id="main-content" tabIndex={-1} className={cn("mx-auto w-full max-w-6xl px-4 pb-28 pt-6 sm:px-6", className)}>{children}</main>
+      <main id="main-content" tabIndex={-1} className={cn("mx-auto w-full max-w-6xl px-4 pb-28 pt-6 sm:px-6", className)}><OfflineNotice />{children}</main>
       {showBottomNav && <BottomNav active={active} />}
     </div>
   );

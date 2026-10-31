@@ -1,3 +1,4 @@
+import { ThemeToggle } from "./theme-toggle";
 import { LinkButton } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -6,17 +7,18 @@ const desktopLinks = [
   { href: "/search", label: "جست‌وجو", key: "search" },
   { href: "/seller", label: "فروشنده", key: "seller" },
   { href: "/profile", label: "پروفایل", key: "profile" },
-  { href: "/outfits", label: "ست‌سازی", key: "none" },
+  { href: "/closet", label: "ذخیره‌ها", key: "closet" },
+  { href: "/outfits", label: "ست‌سازی", key: "outfits" },
 ] as const;
 
-type Active = "home" | "feed" | "search" | "seller" | "profile" | "none";
+type Active = "home" | "feed" | "search" | "seller" | "profile" | "closet" | "outfits" | "none";
 
 export function SiteHeader({ active = "none", compact = false }: { active?: Active; compact?: boolean }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border surface-glass-strong">
       <div
         className={cn(
-          "mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6",
+          "mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 sm:px-6",
           compact ? "py-3" : "py-4",
         )}
       >
@@ -39,7 +41,8 @@ export function SiteHeader({ active = "none", compact = false }: { active?: Acti
             </a>
           ))}
         </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <ThemeToggle />
           <LinkButton href="/seller/new" variant="outline" size="sm" className="hidden sm:inline-flex">
             ثبت آگهی
           </LinkButton>

@@ -21,7 +21,7 @@ export default async function FeedPage() {
   return (
     <AppShell active="feed" className="space-y-6">
       <PageHeader
-        eyebrow="AI Discovery"
+        eyebrow="پیشنهاد بر اساس قواعد"
         title="فید کشف هوشمند"
         description="آگهی‌های فعال بر اساس تطابق سلیقه، رنگ، دسته و بودجه مرتب می‌شوند."
         actions={
@@ -77,12 +77,14 @@ export default async function FeedPage() {
               title={item.title}
               meta={`${item.category.name} · ${item.size ?? "سایز ثبت نشده"} · ${item.city}`}
               price={item.price}
-              matchPercent={score}
+              matchPercent={profile ? score : undefined}
               imageUrl={item.images[0]?.url}
             />
           ))}
         </div>
       )}
+      <p className="text-sm text-muted-foreground">امتیاز تطابق از دسته، رنگ، سایز و سقف بودجه محاسبه می‌شود؛ تضمین اندازه یا اصالت نیست.</p>
+      {rankedItems.length > 0 && <p className="text-center text-sm text-muted-foreground">پایان آگهی‌های فعلی؛ برای گزینه‌های دیگر فیلترها یا سلیقه را تغییر بده.</p>}
     </AppShell>
   );
 }

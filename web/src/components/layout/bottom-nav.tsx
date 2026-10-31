@@ -8,7 +8,7 @@ const items = [
   { href: "/profile", label: "پروفایل", key: "profile" },
 ] as const;
 
-type Active = "home" | "feed" | "search" | "seller" | "profile" | "none";
+type Active = "home" | "feed" | "search" | "seller" | "profile" | "closet" | "outfits" | "none";
 
 export function BottomNav({ active = "none" }: { active?: Active }) {
   return (

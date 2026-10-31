@@ -16,7 +16,7 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-8 min-h-8 px-3 text-[13px] gap-1.5",
+  sm: "min-h-11 px-3 py-2 text-[13px] gap-1.5",
   md: "h-11 min-h-11 px-4 text-sm gap-2",
   lg: "h-12 min-h-12 px-6 text-base gap-2.5",
   icon: "size-11 min-h-11 min-w-11",
@@ -44,7 +44,7 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-control font-semibold transition-all duration-motion ease-motion",
+        "inline-flex items-center justify-center whitespace-normal text-center rounded-control font-semibold transition-all duration-motion ease-motion",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         "disabled:pointer-events-none disabled:opacity-50 active:shadow-press active:[transform:var(--press)]",
         variants[variant],
@@ -73,7 +73,7 @@ export function LinkButton({
   return (
     <a
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-control font-semibold transition-all duration-motion ease-motion",
+        "inline-flex items-center justify-center whitespace-normal text-center rounded-control font-semibold transition-all duration-motion ease-motion",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         "active:shadow-press active:[transform:var(--press)]",
         variants[variant],

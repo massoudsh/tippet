@@ -19,7 +19,7 @@ export function ItemCard({ href, title, meta, price, matchPercent, imageUrl, cla
         <div className="aspect-[4/3] bg-secondary/80">
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+            <img src={imageUrl} alt={title} loading="lazy" decoding="async" width={640} height={480} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full items-center justify-center text-xs text-muted-foreground">بدون تصویر</div>
           )}

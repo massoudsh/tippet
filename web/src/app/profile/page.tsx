@@ -30,6 +30,7 @@ export default async function ProfilePage() {
             <LinkButton href="/onboarding" variant="brand">
               ویرایش سلیقه
             </LinkButton>
+            <LinkButton href="/closet" variant="outline">کمد ذخیره‌ها</LinkButton>
             <LinkButton href="/feed" variant="outline">
               مشاهده فید
             </LinkButton>

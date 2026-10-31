@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ImageGallery } from "@/components/items/image-gallery";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { ItemActions } from "@/components/items/item-actions";
@@ -8,12 +8,7 @@ import { LinkButton } from "@/components/ui/button";
 import { getItemById } from "@/lib/items";
 import { formatToman } from "@/lib/utils";
 
-const conditionLabels = {
-  NEW_WITH_TAG: "نو با تگ",
-  LIKE_NEW: "در حد نو",
-  GOOD: "خوب",
-  FAIR: "قابل قبول",
-} as const;
+import { conditionLabels, availabilityLabels } from "@/lib/product-labels";
 
 export default async function ItemPage({ params }: { params: { id: string } }) {
   const item = await getItemById(params.id);
@@ -31,31 +26,11 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
       </div>
 
       <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="grid gap-3 sm:grid-cols-2">
-          {item.images.length === 0 ? (
-            <Card className="col-span-full">
-              <CardContent className="flex h-72 items-center justify-center text-sm text-muted-foreground">
-                تصویری برای این آگهی ثبت نشده است.
-              </CardContent>
-            </Card>
-          ) : (
-            item.images.map((image) => (
-              <div key={image.id} className="overflow-hidden rounded-surface border-line border-border bg-secondary">
-                <Image
-                  src={image.url}
-                  alt={item.title}
-                  width={768}
-                  height={576}
-                  className="h-72 w-full object-cover"
-                />
-              </div>
-            ))
-          )}
-        </div>
+        <ImageGallery images={item.images} title={item.title} />
 
         <Card>
           <CardHeader className="space-y-4">
-            <Badge variant="soft">{item.city}</Badge>
+            <Badge variant="soft">{item.city} · {availabilityLabels[item.status]}</Badge>
             <h1 className="text-3xl font-display leading-tight sm:text-4xl">{item.title}</h1>
             <p className="text-2xl font-display text-brand">{formatToman(item.price)}</p>
             <p className="leading-8 text-muted-foreground">{item.description}</p>
@@ -77,7 +52,8 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
               </p>
             </div>
 
-            <ItemActions itemId={item.id} showPhase2Links />
+            <p className="text-sm text-muted-foreground">مشخصات توسط فروشنده ثبت شده‌اند؛ تأیید اصالت یا تضمین اندازه نیستند. پرداخت و ارسال داخل تیپت فعال نیست.</p>
+            <ItemActions itemId={item.id} whatsappUrl={item.seller.whatsappUrl} telegramUrl={item.seller.telegramUrl} available={item.status === "ACTIVE"} showPhase2Links />
           </CardContent>
         </Card>
       </section>
@@ -89,7 +65,7 @@ function Info({ title, value }: { title: string; value: string }) {
   return (
     <div className="rounded-control border-line border-border bg-field p-4">
       <p className="text-xs text-muted-foreground">{title}</p>
-      <p className="mt-1 font-semibold">{value}</p>
+      <bdi className="mt-1 block break-words font-semibold">{value}</bdi>
     </div>
   );
 }

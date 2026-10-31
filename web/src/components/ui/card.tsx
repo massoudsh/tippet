@@ -1,9 +1,13 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+export function GlassSurface({ variant = "medium", className, ...props }: React.HTMLAttributes<HTMLDivElement> & { variant?: "subtle" | "medium" | "elevated" }) {
+  return <div className={cn("rounded-surface border border-border text-card-foreground", variant === "elevated" ? "surface-glass-strong" : variant === "subtle" ? "bg-background" : "surface-glass", className)} {...props} />;
+}
+
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div
+    <GlassSurface
       className={cn(
         "relative isolate rounded-surface border-line border-border surface-glass text-card-foreground transition-all duration-motion ease-motion",
         className,
