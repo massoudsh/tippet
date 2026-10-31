@@ -6,19 +6,28 @@ import { LinkButton } from "@/components/ui/button";
 import { rankExpansionMarkets, scoreExpansionMarket } from "@/lib/expansion";
 import { faNumber } from "@/lib/utils";
 
-const markets = rankExpansionMarkets([
-  { city: "اصفهان", category: "استریت‌ویر", supplyCount: 90, demandScore: 80, trustReadiness: 70 },
-  { city: "شیراز", category: "وینتیج", supplyCount: 60, demandScore: 70, trustReadiness: 50 },
-  { city: "رشت", category: "کت و بارانی", supplyCount: 48, demandScore: 62, trustReadiness: 55 },
-]);
+import { prisma } from "@/lib/prisma";
+import type { ExpansionMarket } from "@/lib/expansion";
 
-export default function ExpansionPage() {
+export default async function ExpansionPage() {
+  const items = await prisma.item.findMany({ where: { status: "ACTIVE" }, select: { city: true, sellerId: true, category: { select: { name: true } }, _count: { select: { interactions: { where: { type: { in: ["VIEW", "LIKE", "CONTACT_SELLER"] } } } } } } });
+  const grouped = new Map<string, ExpansionMarket & { sellers: Set<string> }>();
+  for (const item of items) {
+    const key = `${item.city}\u0000${item.category.name}`;
+    const market = grouped.get(key) ?? { city: item.city, category: item.category.name, supplyCount: 0, demandCount: 0, sellerCount: 0, sellers: new Set<string>() };
+    market.supplyCount++;
+    market.demandCount += item._count.interactions;
+    market.sellers.add(item.sellerId);
+    market.sellerCount = market.sellers.size;
+    grouped.set(key, market);
+  }
+  const markets = rankExpansionMarkets([...grouped.values()]).slice(0, 9);
   return (
     <AppShell active="none" className="space-y-6">
       <PageHeader
         eyebrow="مقیاس‌پذیری بازار"
         title="اولویت شهرها و دسته‌های بعدی"
-        description="رتبه‌بندی بر اساس عرضه، تقاضا و آمادگی اعتماد — فعلاً با داده نمونه."
+        description="رتبه‌بندی عرضهٔ فعال، تعامل ثبت‌شده و تعداد فروشندگان — بر اساس دادهٔ واقعی."
         actions={
           <LinkButton href="/" variant="outline">
             صفحه اصلی
@@ -30,6 +39,7 @@ export default function ExpansionPage() {
         این صفحه برای تصمیم‌گیری توسعه بازار است؛ کاربر نهایی MVP روی تهران وینتیج/استریت‌ویر تمرکز دارد.
       </Alert>
 
+      {!markets.length && <p role="status">هنوز عرضهٔ فعالی برای محاسبه وجود ندارد.</p>}
       <div className="grid gap-4 md:grid-cols-3">
         {markets.map((market, index) => (
           <Card key={`${market.city}-${market.category}`}>
