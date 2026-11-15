@@ -75,6 +75,17 @@ Research: [Komodaa publisher listing](https://play.google.com/store/apps/details
 
 The five opportunities above remain proposals, not shipped features. Lint could not start because installed dependencies are absent (`next: not found`); typecheck/tests therefore remain unverified. No production build or browser/visual audit was performed. Reduced-motion styles and focus-visible rules already exist and were preserved.
 
+## Docker
+
+```bash
+cp .env.docker.example .env
+docker compose build
+docker compose up -d
+curl -f http://localhost:3000/api/health
+```
+
+The compose stack runs PostgreSQL (pgvector), a one-shot `prisma migrate deploy` job, and the Next.js standalone server. Full details, production requirements, and limits: [`docs/DOCKER.md`](docs/DOCKER.md).
+
 ## وضعیت MVP
 
 - CI وب برای lint، type-check، تست و build فعال است.

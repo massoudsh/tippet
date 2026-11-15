@@ -1,19 +1,52 @@
 services:
   postgres:
     image: pgvector/pgvector:pg16
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: tipet
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ${POSTGRES_DB:-tipet}
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d tipet"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-tipet}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+  migrate:
+    build:
+      context: ./web
+      target: migrator
+    restart: "no"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-tipet}?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./web
+      target: runner
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-tipet}?schema=public
+      SMS_PROVIDER_ENDPOINT: ${SMS_PROVIDER_ENDPOINT:-}
+      SMS_PROVIDER_TOKEN: ${SMS_PROVIDER_TOKEN:-}
+      STORAGE_UPLOAD_ENDPOINT: ${STORAGE_UPLOAD_ENDPOINT:-}
+      STORAGE_UPLOAD_TOKEN: ${STORAGE_UPLOAD_TOKEN:-}
+      AI_PROVIDER_API_KEY: ${AI_PROVIDER_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "${WEB_PORT:-3000}:3000"
 
 volumes:
   postgres_data:

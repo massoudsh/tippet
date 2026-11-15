@@ -5,6 +5,8 @@ import { OutfitBoard } from "@/components/items/outfit-board";
 import { listItems } from "@/lib/items";
 import { conditionLabels } from "@/lib/product-labels";
 
+export const dynamic = "force-dynamic";
+
 export default async function OutfitsPage() {
   const items = await listItems({});
   return <AppShell active="outfits" className="space-y-6">

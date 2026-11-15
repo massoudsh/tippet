@@ -61,3 +61,68 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build runtime image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./web
+          target: runner
+          push: false
+          load: true
+          tags: tipet-web:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build migration image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./web
+          target: migrator
+          push: false
+          tags: tipet-migrator:ci
+          cache-from: type=gha
+
+      - name: Verify image starts and serves health endpoint
+        run: |
+          set -euo pipefail
+          docker network create tipet-ci
+          docker run -d --name tipet-db --network tipet-ci \
+            -e POSTGRES_DB=tipet -e POSTGRES_USER=tipet -e POSTGRES_PASSWORD=tipet \
+            pgvector/pgvector:pg16
+          for attempt in $(seq 1 30); do
+            if docker exec tipet-db pg_isready -U tipet -d tipet > /dev/null 2>&1; then
+              break
+            fi
+            sleep 2
+          done
+          docker run --rm --network tipet-ci \
+            -e DATABASE_URL="postgresql://tipet:tipet@tipet-db:5432/tipet?schema=public" \
+            tipet-migrator:ci
+          docker run -d --name tipet-web --network tipet-ci -p 3000:3000 \
+            -e DATABASE_URL="postgresql://tipet:tipet@tipet-db:5432/tipet?schema=public" \
+            tipet-web:ci
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/api/health > /dev/null; then
+              echo "health endpoint responded"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "health endpoint did not respond"
+          docker logs tipet-web
+          exit 1
+
+      - name: Clean up containers
+        if: always()
+        run: |
+          docker rm -f tipet-web tipet-db || true
+          docker network rm tipet-ci || true

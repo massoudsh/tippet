@@ -29,6 +29,14 @@
 > ویتست، نه خود vitest) و type-check تمیز `matching.ts` با `--strict`. خود `npm install`/`vitest`/
 > `next build` محلی اجرا نشده و نباید اجرا شود (AGENTS.md).
 
+## استقرار با Docker
+- `web/Dockerfile` چهار مرحله دارد: `deps` (npm ci)، `builder` (prisma generate + next build با `output: "standalone"`)، `migrator` (فقط CLI برای `prisma migrate deploy`) و `runner` (Node غیر root، پورت ۳۰۰۰، HEALTHCHECK روی `/api/health`).
+- `docker-compose.yml` سه سرویس دارد: `postgres` (pgvector)، `migrate` (یک‌بار، بعد از healthy شدن دیتابیس) و `web` (بعد از موفقیت migrate).
+- `/api/health` با `SELECT 1` وضعیت دیتابیس را برمی‌گرداند؛ ۲۰۰ سالم و ۵۰۳ در دسترس نبودن دیتابیس.
+- صفحاتی که بدون session به دیتابیس وابسته‌اند (`/expansion`, `/outfits`) با `force-dynamic` رندر می‌شوند تا build ایمیج به دیتابیس زنده نیاز نداشته باشد.
+- در production، آپلود محلی غیرفعال است؛ بدون `STORAGE_UPLOAD_ENDPOINT` آپلود تصویر رد می‌شود. جزئیات در `docs/DOCKER.md`.
+- job `docker` در CI ایمیج runner و migrator را می‌سازد و با postgres موقت، migrate و health را اجرا می‌کند.
+
 ## منابع کد
 - `web/package.json`, `web/prisma/schema.prisma`, `web/tailwind.config.ts`, `web/src/app/globals.css`
 - `web/src/components/**`, `web/src/lib/utils.ts`

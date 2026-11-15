@@ -9,6 +9,8 @@ import { faNumber } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import type { ExpansionMarket } from "@/lib/expansion";
 
+export const dynamic = "force-dynamic";
+
 export default async function ExpansionPage() {
   const items = await prisma.item.findMany({ where: { status: "ACTIVE" }, select: { city: true, sellerId: true, category: { select: { name: true } }, _count: { select: { interactions: { where: { type: { in: ["VIEW", "LIKE", "CONTACT_SELLER"] } } } } } } });
   const grouped = new Map<string, ExpansionMarket & { sellers: Set<string> }>();
