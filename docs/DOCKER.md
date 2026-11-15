@@ -15,7 +15,7 @@ cp .env.docker.example .env
 docker compose build
 docker compose up -d
 docker compose ps
-curl -f http://localhost:3000/api/health
+curl -f "http://localhost:${WEB_PORT:-3000}/api/health"
 ```
 
 `/api/health` runs `SELECT 1` and returns `200` with `{"status":"ok"}` or `503` when the database is unreachable. The image `HEALTHCHECK` uses the same endpoint.
@@ -48,6 +48,40 @@ The container runs with `NODE_ENV=production`, so two integrations are mandatory
 - **SMS**: without `SMS_PROVIDER_ENDPOINT` and `SMS_PROVIDER_TOKEN`, OTP login fails because codes are only returned in development.
 
 Because uploads are served from the app's own `public/` directory only in development, production deployments should place uploaded files behind the remote storage/CDN endpoint.
+
+## Port already allocated
+
+If `docker compose up -d` fails with:
+
+```
+Bind for 0.0.0.0:3000 failed: port is already allocated
+```
+
+the images, database, and migrations have already succeeded; only the host port bind failed. Find and free the port:
+
+```bash
+sudo ss -ltnp 'sport = :3000'
+```
+
+Then choose one option:
+
+1. Stop the other process using port 3000.
+2. Start Docker on a free host port instead:
+
+```bash
+WEB_PORT=3001 docker compose up -d
+curl -f http://localhost:3001/api/health
+```
+
+To make that permanent, set `WEB_PORT=3001` in `.env`. The container still listens on 3000 internally; only the host side changes. PostgreSQL uses `POSTGRES_PORT` the same way, so a local PostgreSQL on 5432 can be avoided with `POSTGRES_PORT=5433`.
+
+Because `web` was created before Postgres was ready, a later start may only need:
+
+```bash
+docker compose up -d
+```
+
+(the `migrate` service is one-shot and re-runs only when recreated).
 
 ## Notes and limits
 

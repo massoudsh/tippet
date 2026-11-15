@@ -81,8 +81,10 @@ The five opportunities above remain proposals, not shipped features. Lint could 
 cp .env.docker.example .env
 docker compose build
 docker compose up -d
-curl -f http://localhost:3000/api/health
+curl -f "http://localhost:${WEB_PORT:-3000}/api/health"
 ```
+
+If port 3000 is already in use, run `WEB_PORT=3001 docker compose up -d`; see [`docs/DOCKER.md`](docs/DOCKER.md#port-already-allocated).
 
 The compose stack runs PostgreSQL (pgvector), a one-shot `prisma migrate deploy` job, and the Next.js standalone server. Full details, production requirements, and limits: [`docs/DOCKER.md`](docs/DOCKER.md).
 
